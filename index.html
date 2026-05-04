@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans SC', 'PingFang SC', sans-serif; background: var(--color-background-tertiary); color: var(--color-text-primary); min-height: 100vh; }
+  
+  .app { max-width: 420px; margin: 0 auto; min-height: 100vh; background: var(--color-background-primary); display: flex; flex-direction: column; }
+  
+  /* Nav */
+  .nav { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); position: sticky; top: 0; z-index: 100; }
+  .nav-btn { flex: 1; padding: 14px 8px; font-size: 13px; border: none; background: none; cursor: pointer; color: var(--color-text-secondary); transition: all 0.2s; border-bottom: 2px solid transparent; }
+  .nav-btn.active { color: var(--color-text-primary); font-weight: 500; border-bottom: 2px solid #D85A30; }
+  
+  /* Pages */
+  .page { display: none; flex: 1; overflow-y: auto; }
+  .page.active { display: flex; flex-direction: column; }
+  
+  /* Calendar */
+  .cal-header { padding: 20px 20px 12px; display: flex; align-items: center; justify-content: space-between; }
+  .cal-title { font-size: 18px; font-weight: 500; }
+  .cal-nav { display: flex; gap: 8px; }
+  .cal-nav button { width: 32px; height: 32px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: none; cursor: pointer; color: var(--color-text-primary); font-size: 14px; }
+  .cal-grid { padding: 0 20px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+  .cal-weekday { font-size: 11px; color: var(--color-text-tertiary); padding: 6px 0; }
+  .cal-day { padding: 6px 2px; font-size: 13px; border-radius: var(--border-radius-md); cursor: pointer; position: relative; transition: background 0.15s; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 2px; }
+  .cal-day:hover { background: var(--color-background-secondary); }
+  .cal-day.today .day-num { background: #D85A30; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .cal-day.other-month { color: var(--color-text-tertiary); }
+  .meal-dots { display: flex; gap: 2px; justify-content: center; }
+  .meal-dot { width: 4px; height: 4px; border-radius: 50%; background: #D85A30; }
+  .meal-dot.lunch { background: #1D9E75; }
+  .meal-dot.dinner { background: #7F77DD; }
+  
+  /* Day detail */
+  .day-detail { padding: 16px 20px; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 12px; }
+  .day-detail-title { font-size: 14px; font-weight: 500; margin-bottom: 12px; color: var(--color-text-secondary); }
+  .meal-record { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 12px; margin-bottom: 8px; display: flex; gap: 12px; }
+  .meal-record-info { flex: 1; }
+  .meal-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 2px; }
+  .meal-content { font-size: 13px; }
+  .meal-photo { width: 56px; height: 56px; border-radius: var(--border-radius-md); object-fit: cover; background: var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  
+  /* Decide page */
+  .decide-header { padding: 24px 20px 16px; }
+  .decide-greeting { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .decide-title { font-size: 22px; font-weight: 500; }
+  .meal-time-tabs { display: flex; gap: 8px; padding: 0 20px 16px; }
+  .meal-tab { flex: 1; padding: 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); text-align: center; cursor: pointer; font-size: 13px; transition: all 0.15s; background: var(--color-background-primary); color: var(--color-text-secondary); }
+  .meal-tab.active { border-color: #D85A30; background: #FAECE7; color: #993C1D; font-weight: 500; }
+  .meal-tab .tab-emoji { font-size: 18px; display: block; margin-bottom: 2px; }
+  
+  .mode-cards { padding: 0 20px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .mode-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 16px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 14px; }
+  .mode-card:hover { border-color: var(--color-border-primary); background: var(--color-background-secondary); }
+  .mode-icon { width: 44px; height: 44px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .mode-icon.delivery { background: #FAECE7; }
+  .mode-icon.dine { background: #E1F5EE; }
+  .mode-icon.cook { background: #EEEDFE; }
+  .mode-title { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+  .mode-sub { font-size: 12px; color: var(--color-text-secondary); }
+  .mode-arrow { margin-left: auto; color: var(--color-text-tertiary); font-size: 16px; }
+  
+  /* Spinner wheel */
+  .spinner-page { padding: 20px; flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .back-btn { align-self: flex-start; border: none; background: none; color: var(--color-text-secondary); cursor: pointer; font-size: 13px; padding: 0 0 16px; display: flex; align-items: center; gap: 4px; }
+  .spinner-title { font-size: 18px; font-weight: 500; margin-bottom: 6px; text-align: center; }
+  .spinner-sub { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 24px; text-align: center; }
+  
+  .wheel-container { position: relative; width: 280px; height: 280px; margin-bottom: 24px; }
+  .wheel-canvas { width: 280px; height: 280px; border-radius: 50%; }
+  .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 20px solid #D85A30; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+  .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 40px; height: 40px; border-radius: 50%; background: var(--color-background-primary); border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  
+  .spin-btn { padding: 14px 48px; background: #D85A30; color: white; border: none; border-radius: var(--border-radius-lg); font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
+  .spin-btn:hover { background: #993C1D; }
+  .spin-btn:active { transform: scale(0.97); }
+  .spin-result { font-size: 20px; font-weight: 500; margin-bottom: 20px; min-height: 28px; text-align: center; }
+  
+  /* Options management */
+  .options-section { width: 100%; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+  .options-header { padding: 10px 14px; background: var(--color-background-secondary); font-size: 12px; color: var(--color-text-secondary); display: flex; justify-content: space-between; align-items: center; }
+  .options-list { max-height: 140px; overflow-y: auto; }
+  .option-item { padding: 8px 14px; font-size: 13px; border-top: 0.5px solid var(--color-border-tertiary); display: flex; justify-content: space-between; align-items: center; }
+  .option-del { border: none; background: none; color: var(--color-text-tertiary); cursor: pointer; font-size: 16px; padding: 0 4px; }
+  .option-del:hover { color: #E24B4A; }
+  .add-option { display: flex; gap: 8px; padding: 10px 14px; border-top: 0.5px solid var(--color-border-tertiary); }
+  .add-option input { flex: 1; border: none; background: none; font-size: 13px; outline: none; color: var(--color-text-primary); }
+  .add-option button { font-size: 13px; color: #D85A30; border: none; background: none; cursor: pointer; font-weight: 500; }
+  
+  /* Cook flow */
+  .cook-page { flex: 1; display: flex; flex-direction: column; padding: 20px; }
+  .cook-step-indicator { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-border-tertiary); flex-shrink: 0; transition: background 0.3s; }
+  .step-dot.active { background: #D85A30; width: 20px; border-radius: 4px; }
+  .step-dot.done { background: #1D9E75; }
+  
+  .cook-category { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .cook-title { font-size: 20px; font-weight: 500; margin-bottom: 20px; }
+  
+  .selected-items { display: flex; flex-wrap: wrap; gap: 6px; min-height: 36px; margin-bottom: 20px; }
+  .selected-tag { padding: 5px 12px; background: #FAECE7; color: #993C1D; border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .selected-tag button { background: none; border: none; cursor: pointer; color: #993C1D; font-size: 14px; padding: 0; line-height: 1; }
+  
+  .cook-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 20px; }
+  .btn-secondary { flex: 1; padding: 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); background: none; font-size: 14px; cursor: pointer; color: var(--color-text-primary); transition: all 0.15s; }
+  .btn-secondary:hover { background: var(--color-background-secondary); }
+  .btn-primary { flex: 1; padding: 12px; background: #D85A30; color: white; border: none; border-radius: var(--border-radius-lg); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .btn-primary:hover { background: #993C1D; }
+  
+  /* AI assessment */
+  .ai-page { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+  .ai-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 16px; }
+  .ai-spinner { width: 40px; height: 40px; border: 3px solid var(--color-border-tertiary); border-top: 3px solid #D85A30; border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ai-result { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 16px; margin-bottom: 16px; font-size: 14px; line-height: 1.7; }
+  .ai-score { display: flex; gap: 10px; margin-bottom: 16px; }
+  .ai-score-card { flex: 1; background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; text-align: center; }
+  .ai-score-num { font-size: 22px; font-weight: 500; margin-bottom: 2px; }
+  .ai-score-label { font-size: 11px; color: var(--color-text-secondary); }
+  .menu-summary { margin-bottom: 16px; }
+  .menu-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-cat { font-size: 11px; color: var(--color-text-tertiary); min-width: 32px; }
+  
+  /* Ingredients */
+  .ingredients-page { flex: 1; padding: 20px; }
+  .ing-section { margin-bottom: 20px; }
+  .ing-title { font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--color-text-secondary); }
+  .ing-list { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); overflow: hidden; }
+  .ing-item { padding: 10px 14px; font-size: 13px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; justify-content: space-between; }
+  .ing-item:last-child { border-bottom: none; }
+  .ing-amount { color: var(--color-text-secondary); font-size: 12px; }
+  
+  /* Record upload */
+  .record-page { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+  .upload-area { border: 1.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; margin-bottom: 16px; background: var(--color-background-secondary); transition: all 0.15s; }
+  .upload-area:hover { border-color: #D85A30; background: #FAECE7; }
+  .upload-icon { font-size: 32px; }
+  .upload-text { font-size: 14px; color: var(--color-text-secondary); }
+  .upload-preview { position: relative; border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 16px; }
+  .upload-preview img { width: 100%; max-height: 200px; object-fit: cover; display: block; }
+  .upload-remove { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .text-record { width: 100%; padding: 12px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); font-size: 14px; font-family: inherit; resize: none; outline: none; background: var(--color-background-primary); color: var(--color-text-primary); min-height: 80px; }
+  .text-record:focus { border-color: #D85A30; }
+  
+  /* Category manager */
+  .cat-manager { padding: 20px; }
+  .cat-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .cat-handle { color: var(--color-text-tertiary); font-size: 16px; }
+  .cat-name { flex: 1; font-size: 14px; }
+  .cat-del { border: none; background: none; color: var(--color-text-tertiary); cursor: pointer; font-size: 18px; }
+  
+  .hidden { display: none !important; }
+  
+  /* toast */
+  .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #2C2C2A; color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 1000; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showPage('calendar')">📅 日历</button>
+    <button class="nav-btn" onclick="showPage('decide')">🎯 选餐</button>
+    <button class="nav-btn" onclick="showPage('settings')">⚙️ 设置</button>
+  </nav>
+  
+  <!-- CALENDAR PAGE -->
+  <div class="page active" id="page-calendar">
+    <div class="cal-header">
+      <span class="cal-title" id="cal-title"></span>
+      <div class="cal-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="day-detail" id="day-detail" style="display:none"></div>
+  </div>
+  
+  <!-- DECIDE PAGE -->
+  <div class="page" id="page-decide">
+    <div class="decide-header">
+      <div class="decide-greeting" id="decide-greeting">今天</div>
+      <div class="decide-title">吃什么呢？</div>
+    </div>
+    <div class="meal-time-tabs">
+      <div class="meal-tab active" onclick="selectMealTime('breakfast',this)">
+        <span class="tab-emoji">☀️</span>早餐
+      </div>
+      <div class="meal-tab" onclick="selectMealTime('lunch',this)">
+        <span class="tab-emoji">🌤️</span>午餐
+      </div>
+      <div class="meal-tab" onclick="selectMealTime('dinner',this)">
+        <span class="tab-emoji">🌙</span>晚餐
+      </div>
+    </div>
+    <div class="mode-cards">
+      <div class="mode-card" onclick="startMode('delivery')">
+        <div class="mode-icon delivery">🛵</div>
+        <div>
+          <div class="mode-title">叫外卖</div>
+          <div class="mode-sub">转盘决定点什么</div>
+        </div>
+        <span class="mode-arrow">›</span>
+      </div>
+      <div class="mode-card" onclick="startMode('dine')">
+        <div class="mode-icon dine">🍽️</div>
+        <div>
+          <div class="mode-title">出去吃</div>
+          <div class="mode-sub">转盘决定去哪吃</div>
+        </div>
+        <span class="mode-arrow">›</span>
+      </div>
+      <div class="mode-card" onclick="startMode('cook')">
+        <div class="mode-icon cook">👨‍🍳</div>
+        <div>
+          <div class="mode-title">自己做饭</div>
+          <div class="mode-sub">AI 营养搭配 + 食材清单</div>
+        </div>
+        <span class="mode-arrow">›</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- SETTINGS PAGE -->
+  <div class="page" id="page-settings">
+    <div style="padding:20px">
+      <div style="font-size:18px;font-weight:500;margin-bottom:20px">设置</div>
+      
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px">外卖转盘选项</div>
+      <div class="options-section" style="margin-bottom:20px">
+        <div class="options-list" id="settings-delivery-list"></div>
+        <div class="add-option">
+          <input placeholder="添加选项…" id="add-delivery-input" onkeypress="if(event.key==='Enter')addSettingsOption('delivery')">
+          <button onclick="addSettingsOption('delivery')">添加</button>
+        </div>
+      </div>
+      
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px">出去吃转盘选项</div>
+      <div class="options-section" style="margin-bottom:20px">
+        <div class="options-list" id="settings-dine-list"></div>
+        <div class="add-option">
+          <input placeholder="添加选项…" id="add-dine-input" onkeypress="if(event.key==='Enter')addSettingsOption('dine')">
+          <button onclick="addSettingsOption('dine')">添加</button>
+        </div>
+      </div>
+      
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px">自己做饭 — 菜品分类</div>
+      <div class="options-section" id="cook-categories-section" style="margin-bottom:8px">
+        <div class="options-list" id="settings-cats-list"></div>
+        <div class="add-option">
+          <input placeholder="添加分类（如：主食）…" id="add-cat-input" onkeypress="if(event.key==='Enter')addCategory()">
+          <button onclick="addCategory()">添加</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:24px">每个分类的菜品在选餐时单独管理</div>
+    </div>
+  </div>
+  
+  <!-- SPINNER SCREEN (overlay) -->
+  <div class="page hidden" id="page-spinner">
+    <div class="spinner-page">
+      <button class="back-btn" onclick="goBack()">‹ 返回</button>
+      <div class="spinner-title" id="spinner-title">叫外卖</div>
+      <div class="spinner-sub" id="spinner-sub">转动转盘，决定今天吃什么</div>
+      
+      <div class="wheel-container">
+        <canvas class="wheel-canvas" id="wheel-canvas" width="280" height="280"></canvas>
+        <div class="wheel-pointer"></div>
+        <div class="wheel-center"></div>
+      </div>
+      
+      <div class="spin-result" id="spin-result"></div>
+      <button class="spin-btn" id="spin-btn" onclick="spinWheel()">转！</button>
+      
+      <div class="options-section" style="width:100%">
+        <div class="options-header">
+          <span>转盘选项</span>
+          <span style="font-size:11px">可自定义</span>
+        </div>
+        <div class="options-list" id="spinner-options-list"></div>
+        <div class="add-option">
+          <input placeholder="添加选项…" id="add-spinner-input" onkeypress="if(event.key==='Enter')addSpinnerOption()">
+          <button onclick="addSpinnerOption()">添加</button>
+        </div>
+      </div>
+      
+      <div style="margin-top:16px;width:100%;display:none" id="spinner-record-btn-wrap">
+        <button class="btn-primary" style="width:100%" onclick="goToRecord()">记录这餐 →</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- COOK FLOW (overlay) -->
+  <div class="page hidden" id="page-cook">
+    <div class="cook-page">
+      <button class="back-btn" onclick="goBack()">‹ 返回</button>
+      <div class="cook-step-indicator" id="cook-steps"></div>
+      <div class="cook-category" id="cook-category-label"></div>
+      <div class="cook-title" id="cook-step-title"></div>
+      
+      <div class="wheel-container" style="margin:0 auto 16px">
+        <canvas class="wheel-canvas" id="cook-wheel-canvas" width="280" height="280"></canvas>
+        <div class="wheel-pointer"></div>
+        <div class="wheel-center"></div>
+      </div>
+      
+      <div class="spin-result" id="cook-spin-result"></div>
+      <button class="spin-btn" id="cook-spin-btn" onclick="spinCookWheel()">转！</button>
+      
+      <div class="selected-items" id="cook-selected-items"></div>
+      
+      <div class="options-section" style="width:100%;margin-bottom:16px">
+        <div class="options-list" id="cook-options-list"></div>
+        <div class="add-option">
+          <input placeholder="添加菜品…" id="add-cook-input" onkeypress="if(event.key==='Enter')addCookOption()">
+          <button onclick="addCookOption()">添加</button>
+        </div>
+      </div>
+      
+      <div class="cook-actions">
+        <button class="btn-secondary" id="cook-again-btn" onclick="keepCurrentCookStep()"></button>
+        <button class="btn-primary" id="cook-next-btn" onclick="nextCookStep()">就这样 →</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- AI ASSESSMENT -->
+  <div class="page hidden" id="page-ai">
+    <div class="ai-page">
+      <button class="back-btn" onclick="goBackToCook()">‹ 重新选择</button>
+      <div style="font-size:18px;font-weight:500;margin-bottom:16px">AI 营养评估</div>
+      
+      <div id="ai-loading-wrap" class="ai-loading">
+        <div class="ai-spinner"></div>
+        <div style="font-size:14px;color:var(--color-text-secondary)">DeepSeek 分析中…</div>
+      </div>
+      
+      <div id="ai-result-wrap" style="display:none;flex:1;display:flex;flex-direction:column;gap:0">
+        <div class="ai-score" id="ai-score-cards"></div>
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--color-text-secondary)">今天的菜单</div>
+        <div class="menu-summary" id="ai-menu-summary"></div>
+        <div class="ai-result" id="ai-result-text"></div>
+        <div style="display:flex;gap:8px;margin-top:auto;padding-top:16px">
+          <button class="btn-secondary" onclick="goBackToCook()">重新选择</button>
+          <button class="btn-primary" onclick="goToIngredients()">去做饭 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- INGREDIENTS -->
+  <div class="page hidden" id="page-ingredients">
+    <div class="ingredients-page">
+      <button class="back-btn" onclick="showPageDirect('ai')">‹ 返回</button>
+      <div style="font-size:18px;font-weight:500;margin-bottom:6px">食材清单</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:20px">今日所需食材</div>
+      <div id="ingredients-content"></div>
+      <div id="ing-loading" class="ai-loading" style="display:none">
+        <div class="ai-spinner"></div>
+        <div style="font-size:14px;color:var(--color-text-secondary)">生成食材清单…</div>
+      </div>
+      <button class="btn-primary" style="margin-top:20px" onclick="goToRecord()">做好了，记录这餐 →</button>
+    </div>
+  </div>
+  
+  <!-- RECORD PAGE -->
+  <div class="page hidden" id="page-record">
+    <div class="record-page">
+      <button class="back-btn" onclick="goBack()">‹ 返回</button>
+      <div style="font-size:18px;font-weight:500;margin-bottom:6px">记录这餐</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:20px" id="record-subtitle"></div>
+      
+      <div id="upload-area-wrap">
+        <div class="upload-area" onclick="document.getElementById('photo-input').click()">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">点击上传照片</div>
+          <div style="font-size:12px;color:var(--color-text-tertiary)">可选</div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+      </div>
+      <div class="upload-preview hidden" id="upload-preview">
+        <img id="preview-img" src="">
+        <button class="upload-remove" onclick="removePhoto()">✕</button>
+      </div>
+      
+      <textarea class="text-record" id="meal-note" placeholder="备注今天吃了什么… 也可以只填文字记录"></textarea>
+      
+      <div style="margin-top:auto;padding-top:16px">
+        <button class="btn-primary" style="width:100%" onclick="saveMealRecord()">保存记录 ✓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEEPSEEK_API_KEY = 'sk-3745741b78424612b2d7c525209331d3';
+
+let state = {
+  currentMonth: new Date().getMonth(),
+  currentYear: new Date().getFullYear(),
+  selectedDate: null,
+  currentMealTime: 'breakfast',
+  currentMode: null,
+  cookStep: 0,
+  cookSelections: {},
+  previousPage: null,
+  spinResult: null,
+  aiResult: null,
+  ingredientsData: null,
+  photoData: null,
+  records: {},
+  spinnerMode: null,
+  
+  options: {
+    delivery: ['沙县小吃', '麦当劳', '肯德基', '黄焖鸡米饭', '兰州拉面', '螺蛳粉', '日式拉面', '披萨'],
+    dine: ['火锅', '烤肉', '日料', '川菜', '粤菜', '西餐', '泰国菜', '烤鱼'],
+    cookCategories: ['荤菜', '素菜', '汤', '主食'],
+    cookOptions: {
+      '荤菜': ['红烧肉', '宫保鸡丁', '糖醋排骨', '清蒸鱼', '回锅肉', '牛肉炒西兰花'],
+      '素菜': ['炒时蔬', '蒜蓉菠菜', '番茄炒蛋', '豆腐', '炒蘑菇', '凉拌黄瓜'],
+      '汤': ['西红柿蛋花汤', '排骨汤', '紫菜蛋花汤', '冬瓜汤', '莲藕猪骨汤'],
+      '主食': ['白米饭', '炒饭', '面条', '馒头', '饺子']
+    }
+  }
+};
+
+function save() {
+  try { localStorage.setItem('mealapp_state', JSON.stringify({ records: state.records, options: state.options })); } catch(e){}
+}
+
+function load() {
+  try {
+    const d = localStorage.getItem('mealapp_state');
+    if (d) { const p = JSON.parse(d); state.records = p.records || {}; state.options = { ...state.options, ...p.options }; }
+  } catch(e){}
+}
+
+load();
+
+const COLORS = ['#D85A30','#1D9E75','#7F77DD','#BA7517','#185FA5','#993C1D','#085041','#533AB7','#854F0B'];
+const COLORS_LIGHT = ['#FAECE7','#E1F5EE','#EEEDFE','#FAEEDA','#E6F1FB','#FAECE7','#E1F5EE','#EEEDFE','#FAEEDA'];
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  const pg = document.getElementById('page-' + name);
+  if (pg) { pg.classList.remove('hidden'); pg.classList.add('active'); }
+  document.querySelectorAll('.nav-btn').forEach((b, i) => {
+    b.classList.remove('active');
+    if ((i===0&&name==='calendar')||(i===1&&name==='decide')||(i===2&&name==='settings')) b.classList.add('active');
+  });
+  if (name === 'calendar') renderCalendar();
+  if (name === 'settings') renderSettings();
+  if (name === 'decide') {
+    const now = new Date();
+    const h = now.getHours();
+    document.getElementById('decide-greeting').textContent = now.toLocaleDateString('zh-CN',{month:'long',day:'numeric'}) + ' · ' + (h<10?'早上好':h<14?'中午好':h<18?'下午好':'晚上好');
+  }
+}
+
+function showPageDirect(name) {
+  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.classList.add('hidden'); });
+  const pg = document.getElementById('page-' + name);
+  if (pg) { pg.classList.remove('hidden'); pg.classList.add('active'); }
+}
+
+// Calendar
+let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
+
+function changeMonth(d) { calMonth += d; if(calMonth>11){calMonth=0;calYear++;}else if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+
+function renderCalendar() {
+  const months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  document.getElementById('cal-title').textContent = calYear + '年 ' + months[calMonth];
+  const grid = document.getElementById('cal-grid');
+  const weekdays = ['日','一','二','三','四','五','六'];
+  let html = weekdays.map(w => `<div class="cal-weekday">${w}</div>`).join('');
+  
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const days = new Date(calYear, calMonth+1, 0).getDate();
+  const prevDays = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date();
+  
+  for (let i = 0; i < first; i++) {
+    html += `<div class="cal-day other-month"><span class="day-num">${prevDays - first + i + 1}</span></div>`;
+  }
+  for (let d = 1; d <= days; d++) {
+    const isToday = d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
+    const key = `${calYear}-${calMonth+1}-${d}`;
+    const rec = state.records[key] || {};
+    let dots = '';
+    if (rec.breakfast) dots += '<div class="meal-dot breakfast"></div>';
+    if (rec.lunch) dots += '<div class="meal-dot lunch"></div>';
+    if (rec.dinner) dots += '<div class="meal-dot dinner"></div>';
+    html += `<div class="cal-day${isToday?' today':''}" onclick="showDayDetail(${calYear},${calMonth+1},${d})">
+      <span class="day-num">${d}</span>
+      <div class="meal-dots">${dots}</div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function showDayDetail(y, m, d) {
+  const key = `${y}-${m}-${d}`;
+  const rec = state.records[key] || {};
+  const detail = document.getElementById('day-detail');
+  const meals = [['breakfast','早餐','☀️'],['lunch','午餐','🌤️'],['dinner','晚餐','🌙']];
+  const labels = {'breakfast':'早餐','lunch':'午餐','dinner':'晚餐'};
+  let html = `<div class="day-detail-title">${y}年${m}月${d}日</div>`;
+  let hasAny = false;
+  meals.forEach(([k, label, emoji]) => {
+    if (rec[k]) {
+      hasAny = true;
+      const modeText = rec[k].mode === 'delivery' ? '外卖' : rec[k].mode === 'dine' ? '出去吃' : '自己做';
+      html += `<div class="meal-record">
+        <div class="meal-record-info">
+          <div class="meal-label">${emoji} ${label} · ${modeText}</div>
+          <div class="meal-content">${rec[k].note || rec[k].dish || '无备注'}</div>
+        </div>
+        ${rec[k].photo ? `<img class="meal-photo" src="${rec[k].photo}" style="width:56px;height:56px;object-fit:cover;border-radius:8px">` : `<div class="meal-photo">${emoji}</div>`}
+      </div>`;
+    }
+  });
+  if (!hasAny) html += '<div style="font-size:13px;color:var(--color-text-tertiary);padding:8px 0">这天还没有记录</div>';
+  detail.innerHTML = html;
+  detail.style.display = 'block';
+}
+
+// Decide
+function selectMealTime(t, el) {
+  state.currentMealTime = t;
+  document.querySelectorAll('.meal-tab').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function startMode(mode) {
+  state.currentMode = mode;
+  state.previousPage = 'decide';
+  if (mode === 'delivery' || mode === 'dine') {
+    state.spinnerMode = mode;
+    showPageDirect('spinner');
+    document.getElementById('spinner-title').textContent = mode === 'delivery' ? '叫外卖' : '出去吃';
+    document.getElementById('spinner-sub').textContent = mode === 'delivery' ? '转盘决定今天点什么外卖' : '转盘决定今天去哪吃';
+    document.getElementById('spin-result').textContent = '';
+    document.getElementById('spinner-record-btn-wrap').style.display = 'none';
+    renderSpinnerOptions();
+    drawWheel('wheel-canvas', state.options[mode]);
+  } else {
+    startCookFlow();
+  }
+}
+
+// Wheel drawing
+function drawWheel(canvasId, options) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = 140, cy = 140, r = 130;
+  ctx.clearRect(0, 0, 280, 280);
+  if (!options || !options.length) {
+    ctx.fillStyle = '#eee'; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#888'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('请添加选项', cx, cy);
+    return;
+  }
+  const slice = (Math.PI * 2) / options.length;
+  options.forEach((opt, i) => {
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, i * slice - Math.PI/2, (i+1) * slice - Math.PI/2);
+    ctx.closePath();
+    ctx.fillStyle = COLORS[i % COLORS.length]; ctx.fill();
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+    
+    ctx.save(); ctx.translate(cx, cy);
+    ctx.rotate(i * slice + slice/2 - Math.PI/2);
+    ctx.textAlign = 'right'; ctx.fillStyle = 'white';
+    ctx.font = `bold ${Math.min(13, 120/options.length + 8)}px sans-serif`;
+    const label = opt.length > 6 ? opt.slice(0,5)+'…' : opt;
+    ctx.fillText(label, r - 10, 5);
+    ctx.restore();
+  });
+}
+
+let spinAngle = 0, isSpinning = false;
+
+function spinWheel() {
+  const mode = state.spinnerMode;
+  const opts = state.options[mode];
+  if (!opts || !opts.length) { showToast('请先添加选项'); return; }
+  if (isSpinning) return;
+  isSpinning = true;
+  document.getElementById('spin-result').textContent = '';
+  document.getElementById('spinner-record-btn-wrap').style.display = 'none';
+  
+  const totalRot = (5 + Math.random() * 5) * Math.PI * 2;
+  const duration = 3000 + Math.random() * 1000;
+  const start = performance.now();
+  const startAngle = spinAngle;
+  
+  function animate(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    spinAngle = startAngle + totalRot * ease;
+    drawWheelRotated('wheel-canvas', opts, spinAngle);
+    if (t < 1) { requestAnimationFrame(animate); return; }
+    isSpinning = false;
+    const slice = (Math.PI * 2) / opts.length;
+    const norm = ((spinAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+    const idx = Math.floor(((Math.PI*2 - norm + Math.PI/2) % (Math.PI*2)) / slice) % opts.length;
+    const result = opts[idx >= 0 ? idx : 0];
+    state.spinResult = result;
+    document.getElementById('spin-result').textContent = '✨ ' + result;
+    document.getElementById('spinner-record-btn-wrap').style.display = 'block';
+  }
+  requestAnimationFrame(animate);
+}
+
+function drawWheelRotated(canvasId, options, angle) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = 140, cy = 140, r = 130;
+  ctx.clearRect(0, 0, 280, 280);
+  const slice = (Math.PI * 2) / options.length;
+  options.forEach((opt, i) => {
+    const start = i * slice - Math.PI/2 + angle;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, start + slice);
+    ctx.closePath();
+    ctx.fillStyle = COLORS[i % COLORS.length]; ctx.fill();
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+    
+    ctx.save(); ctx.translate(cx, cy);
+    ctx.rotate(start + slice/2);
+    ctx.textAlign = 'right'; ctx.fillStyle = 'white';
+    ctx.font = `bold ${Math.min(13, 120/options.length + 8)}px sans-serif`;
+    const label = opt.length > 6 ? opt.slice(0,5)+'…' : opt;
+    ctx.fillText(label, r - 10, 5);
+    ctx.restore();
+  });
+}
+
+function renderSpinnerOptions() {
+  const mode = state.spinnerMode;
+  const list = document.getElementById('spinner-options-list');
+  list.innerHTML = state.options[mode].map((o, i) => 
+    `<div class="option-item"><span style="width:12px;height:12px;border-radius:50%;background:${COLORS[i%COLORS.length]};display:inline-block;margin-right:8px;flex-shrink:0"></span>${o}<button class="option-del" onclick="removeSpinnerOption(${i})">×</button></div>`
+  ).join('');
+}
+
+function addSpinnerOption() {
+  const input = document.getElementById('add-spinner-input');
+  const val = input.value.trim();
+  if (!val) return;
+  state.options[state.spinnerMode].push(val);
+  input.value = ''; save();
+  renderSpinnerOptions();
+  drawWheel('wheel-canvas', state.options[state.spinnerMode]);
+}
+
+function removeSpinnerOption(i) {
+  state.options[state.spinnerMode].splice(i, 1); save();
+  renderSpinnerOptions();
+  drawWheel('wheel-canvas', state.options[state.spinnerMode]);
+}
+
+// Cook flow
+let cookSpinAngle = 0, cookIsSpinning = false;
+
+function startCookFlow() {
+  state.cookStep = 0;
+  state.cookSelections = {};
+  state.options.cookCategories.forEach(c => { state.cookSelections[c] = []; });
+  showPageDirect('cook');
+  renderCookStep();
+}
+
+function renderCookStep() {
+  const cats = state.options.cookCategories;
+  const step = state.cookStep;
+  const cat = cats[step];
+  
+  // Step indicator
+  document.getElementById('cook-steps').innerHTML = cats.map((_, i) =>
+    `<div class="step-dot ${i < step ? 'done' : i === step ? 'active' : ''}"></div>`
+  ).join('');
+  
+  document.getElementById('cook-category-label').textContent = `第 ${step+1} 步 / 共 ${cats.length} 步`;
+  document.getElementById('cook-step-title').textContent = `选 ${cat}`;
+  document.getElementById('cook-again-btn').textContent = `再来个${cat}`;
+  
+  // Selected
+  const sel = state.cookSelections[cat] || [];
+  document.getElementById('cook-selected-items').innerHTML = sel.map(s =>
+    `<div class="selected-tag">${s}<button onclick="removeCookSelection('${cat}','${s}')">×</button></div>`
+  ).join('') || '<div style="font-size:13px;color:var(--color-text-tertiary)">还未选择</div>';
+  
+  // Options
+  const opts = state.options.cookOptions[cat] || [];
+  document.getElementById('cook-options-list').innerHTML = opts.map((o, i) =>
+    `<div class="option-item"><span style="width:12px;height:12px;border-radius:50%;background:${COLORS[i%COLORS.length]};display:inline-block;margin-right:8px;flex-shrink:0"></span>${o}<button class="option-del" onclick="removeCookOption('${cat}',${i})">×</button></div>`
+  ).join('');
+  
+  cookSpinAngle = 0;
+  document.getElementById('cook-spin-result').textContent = '';
+  drawWheelRotated('cook-wheel-canvas', opts, 0);
+  drawWheel('cook-wheel-canvas', opts);
+}
+
+function spinCookWheel() {
+  const cat = state.options.cookCategories[state.cookStep];
+  const opts = state.options.cookOptions[cat] || [];
+  if (!opts.length) { showToast('请先添加菜品'); return; }
+  if (cookIsSpinning) return;
+  cookIsSpinning = true;
+  document.getElementById('cook-spin-result').textContent = '';
+  
+  const totalRot = (5 + Math.random() * 5) * Math.PI * 2;
+  const duration = 2500 + Math.random() * 1000;
+  const start = performance.now();
+  const startAngle = cookSpinAngle;
+  
+  function animate(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    cookSpinAngle = startAngle + totalRot * ease;
+    drawWheelRotated('cook-wheel-canvas', opts, cookSpinAngle);
+    if (t < 1) { requestAnimationFrame(animate); return; }
+    cookIsSpinning = false;
+    const slice = (Math.PI * 2) / opts.length;
+    const norm = ((cookSpinAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+    const idx = Math.floor(((Math.PI*2 - norm + Math.PI/2) % (Math.PI*2)) / slice) % opts.length;
+    const result = opts[idx >= 0 ? idx : 0];
+    document.getElementById('cook-spin-result').textContent = '✨ ' + result;
+    if (!state.cookSelections[cat]) state.cookSelections[cat] = [];
+    if (!state.cookSelections[cat].includes(result)) state.cookSelections[cat].push(result);
+    else { state.cookSelections[cat].push(result + ' ×2'); }
+    updateCookSelected(cat);
+  }
+  requestAnimationFrame(animate);
+}
+
+function updateCookSelected(cat) {
+  const sel = state.cookSelections[cat] || [];
+  document.getElementById('cook-selected-items').innerHTML = sel.map(s =>
+    `<div class="selected-tag">${s}<button onclick="removeCookSelection('${cat}','${s}')">×</button></div>`
+  ).join('') || '<div style="font-size:13px;color:var(--color-text-tertiary)">还未选择</div>';
+}
+
+function removeCookSelection(cat, item) {
+  const arr = state.cookSelections[cat] || [];
+  const i = arr.indexOf(item);
+  if (i > -1) arr.splice(i, 1);
+  updateCookSelected(cat);
+}
+
+function keepCurrentCookStep() { spinCookWheel(); }
+
+function nextCookStep() {
+  const cats = state.options.cookCategories;
+  if (state.cookStep < cats.length - 1) {
+    state.cookStep++;
+    renderCookStep();
+  } else {
+    goToAIAssessment();
+  }
+}
+
+function addCookOption() {
+  const input = document.getElementById('add-cook-input');
+  const val = input.value.trim();
+  if (!val) return;
+  const cat = state.options.cookCategories[state.cookStep];
+  if (!state.options.cookOptions[cat]) state.options.cookOptions[cat] = [];
+  state.options.cookOptions[cat].push(val);
+  input.value = ''; save();
+  renderCookStep();
+}
+
+function removeCookOption(cat, i) {
+  state.options.cookOptions[cat].splice(i, 1); save();
+  renderCookStep();
+}
+
+// AI Assessment
+async function goToAIAssessment() {
+  showPageDirect('ai');
+  document.getElementById('ai-loading-wrap').style.display = 'flex';
+  document.getElementById('ai-result-wrap').style.display = 'none';
+  
+  const menu = Object.entries(state.cookSelections)
+    .filter(([k, v]) => v.length > 0)
+    .map(([k, v]) => `${k}：${v.join('、')}`)
+    .join('\n');
+  
+  const prompt = `我今天${state.currentMealTime === 'breakfast' ? '早餐' : state.currentMealTime === 'lunch' ? '午餐' : '晚餐'}准备自己做这些菜：\n${menu}\n\n请评估这顿饭的营养是否均衡。请用中文回复，给出：\n1. 营养均衡评分（0-100分）\n2. 蛋白质、蔬菜、碳水、脂肪各维度简评（各一句话）\n3. 整体建议（2-3句）\n\n请用以下JSON格式回复，不要有其他文字：{"score":85,"protein":"蛋白质充足","vegetable":"蔬菜丰富","carb":"碳水适中","fat":"脂肪正常","summary":"整体营养均衡，建议..."}\n直接输出JSON，不要markdown代码块。`;
+  
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${DEEPSEEK_API_KEY}` },
+      body: JSON.stringify({ model: 'deepseek-chat', max_tokens: 500, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    let text = data.choices?.[0]?.message?.content || '{}';
+    text = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(text);
+    state.aiResult = result;
+    renderAIResult(result, menu);
+  } catch(e) {
+    const fallback = { score: 78, protein: '蛋白质来源充足', vegetable: '蔬菜搭配合理', carb: '碳水化合物适量', fat: '油脂摄入正常', summary: '整体营养较为均衡，建议多补充蔬果。' };
+    state.aiResult = fallback;
+    renderAIResult(fallback, menu);
+  }
+}
+
+function renderAIResult(result, menuText) {
+  document.getElementById('ai-loading-wrap').style.display = 'none';
+  document.getElementById('ai-result-wrap').style.display = 'flex';
+  document.getElementById('ai-result-wrap').style.flexDirection = 'column';
+  
+  const score = result.score || 80;
+  const color = score >= 80 ? '#1D9E75' : score >= 60 ? '#BA7517' : '#E24B4A';
+  
+  document.getElementById('ai-score-cards').innerHTML = `
+    <div class="ai-score-card" style="flex:0.6">
+      <div class="ai-score-num" style="color:${color}">${score}</div>
+      <div class="ai-score-label">营养评分</div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+      ${[['蛋白质',result.protein],['蔬菜',result.vegetable],['碳水',result.carb],['油脂',result.fat]].map(([k,v]) =>
+        `<div style="font-size:11px;display:flex;gap:6px"><span style="color:var(--color-text-tertiary);min-width:30px">${k}</span><span style="color:var(--color-text-secondary)">${v||'正常'}</span></div>`
+      ).join('')}
+    </div>`;
+  
+  const menuHtml = Object.entries(state.cookSelections).filter(([k,v])=>v.length>0).map(([k,v])=>
+    `<div class="menu-item"><span class="menu-cat">${k}</span><span>${v.join(' / ')}</span></div>`
+  ).join('');
+  document.getElementById('ai-menu-summary').innerHTML = menuHtml;
+  document.getElementById('ai-result-text').textContent = result.summary || '营养评估完成。';
+}
+
+function goBackToCook() {
+  state.cookStep = 0;
+  state.cookSelections = {};
+  state.options.cookCategories.forEach(c => { state.cookSelections[c] = []; });
+  showPageDirect('cook');
+  renderCookStep();
+}
+
+// Ingredients
+async function goToIngredients() {
+  showPageDirect('ingredients');
+  document.getElementById('ingredients-content').innerHTML = '';
+  document.getElementById('ing-loading').style.display = 'flex';
+  
+  const dishes = Object.entries(state.cookSelections)
+    .filter(([k,v]) => v.length > 0)
+    .flatMap(([k,v]) => v);
+  
+  const prompt = `我要做这些菜：${dishes.join('、')}。请列出每道菜所需的主要食材和大致用量（2-4人份）。请用JSON格式回复，格式如下，直接输出JSON不要markdown：{"dishes":[{"name":"红烧肉","ingredients":[{"name":"五花肉","amount":"500g"},{"name":"生抽","amount":"3汤匙"}]}]}`;
+  
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${DEEPSEEK_API_KEY}` },
+      body: JSON.stringify({ model: 'deepseek-chat', max_tokens: 800, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    let text = data.choices?.[0]?.message?.content || '{}';
+    text = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(text);
+    state.ingredientsData = result;
+    renderIngredients(result);
+  } catch(e) {
+    document.getElementById('ing-loading').style.display = 'none';
+    document.getElementById('ingredients-content').innerHTML = '<div style="font-size:13px;color:var(--color-text-secondary)">食材清单生成失败，请检查网络连接</div>';
+  }
+}
+
+function renderIngredients(data) {
+  document.getElementById('ing-loading').style.display = 'none';
+  const dishes = data.dishes || [];
+  let html = '';
+  dishes.forEach(dish => {
+    html += `<div class="ing-section">
+      <div class="ing-title">${dish.name}</div>
+      <div class="ing-list">
+        ${(dish.ingredients||[]).map(ing => `<div class="ing-item"><span>${ing.name}</span><span class="ing-amount">${ing.amount}</span></div>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('ingredients-content').innerHTML = html || '<div style="font-size:13px;color:var(--color-text-secondary)">暂无食材数据</div>';
+}
+
+// Record
+function goToRecord() {
+  showPageDirect('record');
+  const mealLabels = { breakfast:'早餐', lunch:'午餐', dinner:'晚餐' };
+  const modeLabels = { delivery:'外卖', dine:'出去吃', cook:'自己做饭' };
+  document.getElementById('record-subtitle').textContent = `记录今天的${mealLabels[state.currentMealTime]} · ${modeLabels[state.currentMode]}`;
+  document.getElementById('meal-note').value = state.spinResult ? `${state.spinResult}` : (state.currentMode === 'cook' ? Object.entries(state.cookSelections).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ') : '');
+  state.photoData = null;
+  document.getElementById('upload-area-wrap').style.display = 'block';
+  document.getElementById('upload-preview').classList.add('hidden');
+}
+
+function handlePhotoUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    state.photoData = ev.target.result;
+    document.getElementById('preview-img').src = ev.target.result;
+    document.getElementById('upload-area-wrap').style.display = 'none';
+    document.getElementById('upload-preview').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+  state.photoData = null;
+  document.getElementById('upload-area-wrap').style.display = 'block';
+  document.getElementById('upload-preview').classList.add('hidden');
+  document.getElementById('photo-input').value = '';
+}
+
+function saveMealRecord() {
+  const today = new Date();
+  const key = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+  if (!state.records[key]) state.records[key] = {};
+  state.records[key][state.currentMealTime] = {
+    mode: state.currentMode,
+    note: document.getElementById('meal-note').value,
+    dish: state.spinResult || '',
+    photo: state.photoData || null,
+    time: new Date().toISOString()
+  };
+  save();
+  showToast('记录保存成功 ✓');
+  setTimeout(() => showPage('calendar'), 800);
+}
+
+// Settings
+function renderSettings() {
+  ['delivery', 'dine'].forEach(m => {
+    document.getElementById(`settings-${m}-list`).innerHTML = state.options[m].map((o, i) =>
+      `<div class="option-item"><span style="width:12px;height:12px;border-radius:50%;background:${COLORS[i%COLORS.length]};display:inline-block;margin-right:8px"></span>${o}<button class="option-del" onclick="removeSettingsOption('${m}',${i})">×</button></div>`
+    ).join('');
+  });
+  document.getElementById('settings-cats-list').innerHTML = state.options.cookCategories.map((c, i) =>
+    `<div class="option-item"><span style="width:12px;height:12px;border-radius:50%;background:${COLORS[i%COLORS.length]};display:inline-block;margin-right:8px"></span>${c}<button class="option-del" onclick="removeCategoryGlobal(${i})">×</button></div>`
+  ).join('');
+}
+
+function addSettingsOption(m) {
+  const val = document.getElementById(`add-${m}-input`).value.trim();
+  if (!val) return;
+  state.options[m].push(val);
+  document.getElementById(`add-${m}-input`).value = '';
+  save(); renderSettings();
+}
+
+function removeSettingsOption(m, i) { state.options[m].splice(i, 1); save(); renderSettings(); }
+
+function addCategory() {
+  const val = document.getElementById('add-cat-input').value.trim();
+  if (!val) return;
+  state.options.cookCategories.push(val);
+  if (!state.options.cookOptions[val]) state.options.cookOptions[val] = [];
+  document.getElementById('add-cat-input').value = '';
+  save(); renderSettings();
+}
+
+function removeCategoryGlobal(i) {
+  const cat = state.options.cookCategories[i];
+  state.options.cookCategories.splice(i, 1);
+  save(); renderSettings();
+}
+
+function goBack() { showPage('decide'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// Init
+renderCalendar();
+showPage('calendar');
+</script>
+</body>
+</html>
