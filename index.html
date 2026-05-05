@@ -628,7 +628,7 @@ function initFirebase() {
 
 function pushToCloud() {
   if (!db) return;
-  // Debounce: wait 2 seconds before pushing
+  // Short debounce: 500ms
   if (syncTimer) clearTimeout(syncTimer);
   syncTimer = setTimeout(() => {
     syncStatus = "syncing";
@@ -651,8 +651,21 @@ function pushToCloud() {
       syncStatus = "error";
       updateSyncUI();
     }
-  }, 2000);
+  }, 500);
 }
+
+// Force sync on page unload (tab close / refresh)
+window.addEventListener('beforeunload', () => {
+  if (db && syncStatus !== 'syncing') {
+    try {
+      db.ref("users/" + uid).set({
+        records: S.records,
+        opts: S.opts,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      });
+    } catch(e) {}
+  }
+});
 
 function pullFromCloud() {
   if (!db) return;
