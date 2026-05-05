@@ -99,11 +99,12 @@ body { font-family: 'Noto Sans SC', 'PingFang SC', sans-serif; background: var(-
 .sp-title { font-size: 18px; font-weight: 700; text-align: center; }
 .sp-sub { font-size: 12px; color: var(--text-sub); text-align: center; }
 .wheel-outer { position: relative; width: min(260px, 68vw); height: min(260px, 68vw); flex-shrink: 0; }
-.wheel-canvas { width: 100%; height: 100%; border-radius: 50%; display: block; }
+.wheel-canvas { width: 100%; height: 100%; border-radius: 50%; display: block; cursor: pointer; }
 .wheel-ptr { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 16px solid var(--pink-deep); filter: drop-shadow(0 2px 4px rgba(212,83,126,.3)); }
 .wheel-hub { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 32px; height: 32px; border-radius: 50%; background: var(--surface); border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
-.spin-result-box { min-height: 44px; text-align: center; }
-.spin-result-main { font-size: 20px; font-weight: 700; color: var(--pink-dark); }
+.spin-result-box { min-height: 48px; text-align: center; }
+.spin-result-main { font-size: 22px; font-weight: 700; color: var(--pink-dark); letter-spacing: .5px; }
+.spin-result-main.has-result { background: var(--pink-light); border-radius: 20px; padding: 6px 18px; display: inline-block; }
 .spin-result-hint { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
 .spin-btn { padding: 13px 48px; background: var(--pink); color: var(--pink-dark); border: none; border-radius: 50px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all .15s; letter-spacing: .5px; }
 .spin-btn:active { transform: scale(.96); background: var(--pink-deep); color: white; }
@@ -132,10 +133,44 @@ body { font-family: 'Noto Sans SC', 'PingFang SC', sans-serif; background: var(-
 
 /* STEP DOTS */
 .step-dots { display: flex; align-items: center; gap: 4px; }
-.sdot { height: 6px; border-radius: 3px; transition: all .3s; flex-shrink: 0; }
+.sdot { height: 6px; border-radius: 3px; transition: all .3s; flex-shrink: 0; cursor: pointer; }
 .sdot.p { width: 6px; background: var(--border); }
 .sdot.a { width: 18px; background: var(--pink); }
 .sdot.d { width: 6px; background: var(--mint); }
+
+/* SWIPEABLE WHEEL TRACK */
+.wheel-track-wrap { width: min(260px, 68vw); overflow: hidden; flex-shrink: 0; position: relative; }
+.wheel-track { display: flex; transition: transform 0.3s cubic-bezier(.4,0,.2,1); will-change: transform; }
+.wheel-slide { flex-shrink: 0; width: min(260px, 68vw); display: flex; align-items: center; justify-content: center; }
+
+/* GEAR BUTTON on wheel */
+.wheel-gear-btn {
+  position: absolute; top: -4px; right: -4px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  font-size: 16px; cursor: pointer; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.wheel-gear-btn:active { background: var(--pink-light); }
+
+/* SETTINGS MODAL */
+.settings-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 60; display: none; align-items: flex-end; }
+.settings-modal-overlay.open { display: flex; }
+.settings-modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-width: 430px; margin: 0 auto; padding: 20px 20px 32px; max-height: 75dvh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.settings-modal-title { font-size: 15px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.settings-opt-row { padding: 8px 12px; font-size: 13px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 8px; background: var(--surface); }
+.settings-opt-name { flex: 1; }
+.settings-opt-del { border: none; background: none; cursor: pointer; color: var(--text-hint); font-size: 18px; padding: 0 2px; line-height: 1; }
+.settings-opt-del:hover { color: #E24B4A; }
+.settings-add-row { display: flex; gap: 8px; padding: 8px 12px; border: 0.5px dashed var(--border); border-radius: var(--radius-sm); }
+.settings-add-row input { flex: 1; border: none; background: none; font-size: 13px; outline: none; font-family: inherit; color: var(--text); }
+.settings-add-row button { font-size: 13px; color: var(--pink-deep); border: none; background: none; cursor: pointer; font-weight: 500; font-family: inherit; }
+.settings-del-cat-btn { padding: 10px; border: none; border-radius: var(--radius-sm); background: #FCEBEB; color: #E24B4A; font-size: 13px; cursor: pointer; font-family: inherit; text-align: center; }
+.settings-add-cat-row { display: flex; gap: 8px; padding: 8px 12px; border: 1px dashed var(--border); border-radius: var(--radius-sm); background: var(--bg); }
+.settings-add-cat-row input { flex: 1; border: none; background: none; font-size: 13px; outline: none; font-family: inherit; color: var(--text); }
+.settings-add-cat-row button { font-size: 13px; color: var(--pink-deep); border: none; background: none; cursor: pointer; font-weight: 500; font-family: inherit; }
 
 /* COOK TYPE */
 .cook-type-cards { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
@@ -281,9 +316,10 @@ textarea.note-input:focus { border-color: var(--pink); }
       <div class="sp-title" id="sp-title"></div>
       <div class="sp-sub" id="sp-sub">转盘决定，或点选手动选</div>
       <div class="wheel-outer">
-        <canvas class="wheel-canvas" id="main-canvas" width="520" height="520"></canvas>
+        <canvas class="wheel-canvas" id="main-canvas" width="520" height="520" style="cursor:pointer"></canvas>
         <div class="wheel-ptr"></div>
         <div class="wheel-hub"></div>
+        <button class="wheel-gear-btn" onclick="openSettingsModal('spinner')" title="设置选项" style="position:absolute;top:-4px;right:-4px;width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);box-shadow:0 1px 6px rgba(0,0,0,.12);font-size:16px;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center">⚙</button>
       </div>
       <div class="spin-result-box">
         <div class="spin-result-main" id="sp-result-main"></div>
@@ -316,23 +352,20 @@ textarea.note-input:focus { border-color: var(--pink); }
         <div style="font-size:12px;color:var(--text-sub);margin-top:6px" id="bk-step-label"></div>
         <div style="font-size:18px;font-weight:700;margin-top:2px" id="bk-step-title"></div>
       </div>
-      <div class="wheel-outer">
-        <canvas class="wheel-canvas" id="bk-canvas" width="520" height="520"></canvas>
-        <div class="wheel-ptr"></div>
-        <div class="wheel-hub"></div>
+      <!-- swipeable multi-wheel track -->
+      <div class="wheel-track-wrap" id="bk-track-wrap">
+        <div class="wheel-track" id="bk-wheel-track"></div>
       </div>
       <div class="spin-result-box">
         <div class="spin-result-main" id="bk-result-main"></div>
       </div>
       <button class="spin-btn" onclick="doSpin('bk')">✦ 转！</button>
-      <div class="tags-wrap" id="bk-selected"></div>
-      <div class="opts-panel">
-        <div class="opts-header" id="bk-opts-header"><span></span><span style="font-size:11px;color:var(--text-hint)">点击手动选</span></div>
-        <div class="opts-list" id="bk-opts-list"></div>
-        <div class="add-opt"><input placeholder="添加选项…" id="bk-add-input" onkeypress="if(event.key==='Enter')bkAddOpt()"><button onclick="bkAddOpt()">添加</button></div>
+      <div style="width:100%">
+        <div style="font-size:11px;color:var(--text-hint);margin-bottom:4px">已选（点 × 取消）</div>
+        <div class="tags-wrap" id="bk-selected"></div>
       </div>
       <div class="row-btns" style="width:100%">
-        <button class="btn-s" id="bk-again-btn" onclick="doSpin('bk')"></button>
+        <button class="btn-s" id="bk-again-btn" onclick="doSpin('bk')">再转一次</button>
         <button class="btn-p" id="bk-next-btn" onclick="bkNext()">就这样 →</button>
       </div>
       <div style="height:16px"></div>
@@ -380,23 +413,20 @@ textarea.note-input:focus { border-color: var(--pink); }
         <div style="font-size:12px;color:var(--text-sub);margin-top:6px" id="ck-step-label"></div>
         <div style="font-size:18px;font-weight:700;margin-top:2px" id="ck-step-title"></div>
       </div>
-      <div class="wheel-outer">
-        <canvas class="wheel-canvas" id="ck-canvas" width="520" height="520"></canvas>
-        <div class="wheel-ptr"></div>
-        <div class="wheel-hub"></div>
+      <!-- swipeable multi-wheel track -->
+      <div class="wheel-track-wrap" id="ck-track-wrap">
+        <div class="wheel-track" id="ck-wheel-track"></div>
       </div>
       <div class="spin-result-box">
         <div class="spin-result-main" id="ck-result-main"></div>
       </div>
       <button class="spin-btn" onclick="doSpin('ck')">✦ 转！</button>
-      <div class="tags-wrap" id="ck-selected"></div>
-      <div class="opts-panel">
-        <div class="opts-header" id="ck-opts-header"><span></span><span style="font-size:11px;color:var(--text-hint)">点击手动选</span></div>
-        <div class="opts-list" id="ck-opts-list"></div>
-        <div class="add-opt"><input placeholder="添加菜品…" id="ck-add-input" onkeypress="if(event.key==='Enter')ckAddOpt()"><button onclick="ckAddOpt()">添加</button></div>
+      <div style="width:100%">
+        <div style="font-size:11px;color:var(--text-hint);margin-bottom:4px">已选（点 × 取消）</div>
+        <div class="tags-wrap" id="ck-selected"></div>
       </div>
       <div class="row-btns" style="width:100%">
-        <button class="btn-s" id="ck-again-btn" onclick="doSpin('ck')"></button>
+        <button class="btn-s" id="ck-again-btn" onclick="doSpin('ck')">再转一次</button>
         <button class="btn-p" id="ck-next-btn" onclick="ckNext()">就这样 →</button>
       </div>
       <div style="height:16px"></div>
@@ -417,23 +447,20 @@ textarea.note-input:focus { border-color: var(--pink); }
         <div style="font-size:12px;color:var(--text-sub);margin-top:6px" id="lt-step-label"></div>
         <div style="font-size:18px;font-weight:700;margin-top:2px" id="lt-step-title"></div>
       </div>
-      <div class="wheel-outer">
-        <canvas class="wheel-canvas" id="lt-canvas" width="520" height="520"></canvas>
-        <div class="wheel-ptr"></div>
-        <div class="wheel-hub"></div>
+      <!-- swipeable multi-wheel track -->
+      <div class="wheel-track-wrap" id="lt-track-wrap">
+        <div class="wheel-track" id="lt-wheel-track"></div>
       </div>
       <div class="spin-result-box">
         <div class="spin-result-main" id="lt-result-main"></div>
       </div>
       <button class="spin-btn" onclick="doSpin('lt')">✦ 转！</button>
-      <div class="tags-wrap" id="lt-selected"></div>
-      <div class="opts-panel">
-        <div class="opts-header" id="lt-opts-header"><span></span><span style="font-size:11px;color:var(--text-hint)">点击手动选</span></div>
-        <div class="opts-list" id="lt-opts-list"></div>
-        <div class="add-opt"><input placeholder="添加选项…" id="lt-add-input" onkeypress="if(event.key==='Enter')ltAddOpt()"><button onclick="ltAddOpt()">添加</button></div>
+      <div style="width:100%">
+        <div style="font-size:11px;color:var(--text-hint);margin-bottom:4px">已选（点 × 取消）</div>
+        <div class="tags-wrap" id="lt-selected"></div>
       </div>
       <div class="row-btns" style="width:100%">
-        <button class="btn-s" id="lt-again-btn" onclick="doSpin('lt')"></button>
+        <button class="btn-s" id="lt-again-btn" onclick="doSpin('lt')">再转一次</button>
         <button class="btn-p" id="lt-next-btn" onclick="ltNext()">就这样 →</button>
       </div>
       <div style="height:16px"></div>
@@ -550,6 +577,15 @@ textarea.note-input:focus { border-color: var(--pink); }
   </div>
 </div>
 
+<!-- SETTINGS MODAL for wheel options -->
+<div class="settings-modal-overlay" id="settings-modal" onclick="if(event.target===this)closeSettingsModal()">
+  <div class="settings-modal-sheet">
+    <div class="settings-modal-title" id="settings-modal-title">设置选项</div>
+    <div id="settings-modal-body"></div>
+    <button class="modal-cancel" onclick="closeSettingsModal()" style="margin-top:8px">完成</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -581,10 +617,37 @@ function loadState() {
   } catch(e) { return null; }
 }
 function saveState() {
-  try { localStorage.setItem('mealapp_v3', JSON.stringify({ records: S.records, opts: S.opts })); } catch(e) {}
+  try {
+    // Deep clone to ensure nested objects are fully serialized
+    const data = JSON.parse(JSON.stringify({ records: S.records, opts: S.opts }));
+    localStorage.setItem('mealapp_v3', JSON.stringify(data));
+  } catch(e) { console.warn('saveState failed', e); }
 }
 
 let saved = loadState();
+
+// Deep merge: use saved value for all fields, fall back to defaults only if missing
+function deepMergeOpts(defaults, saved) {
+  if (!saved) return JSON.parse(JSON.stringify(defaults));
+  const result = JSON.parse(JSON.stringify(defaults));
+  // Overwrite top-level arrays/objects with saved versions where they exist
+  for (const k of Object.keys(saved)) {
+    if (k in result) {
+      if (Array.isArray(saved[k])) {
+        result[k] = saved[k];
+      } else if (typeof saved[k] === 'object' && saved[k] !== null) {
+        // Merge object: keep defaults for missing keys, use saved for existing
+        for (const sk of Object.keys(saved[k])) {
+          result[k][sk] = saved[k][sk];
+        }
+      } else {
+        result[k] = saved[k];
+      }
+    }
+  }
+  return result;
+}
+
 let S = {
   calYear: new Date().getFullYear(),
   calMonth: new Date().getMonth(),
@@ -600,15 +663,15 @@ let S = {
   photoData: null,
   editKey: null,
   editMeal: null,
-  records: saved ? saved.records : {},
-  opts: saved ? { ...DEFAULT_OPTS, ...saved.opts } : { ...DEFAULT_OPTS }
+  records: saved ? (saved.records || {}) : {},
+  opts: deepMergeOpts(DEFAULT_OPTS, saved ? saved.opts : null)
 };
-// Merge nested defaults
-if (!S.opts.bkCats) S.opts.bkCats = DEFAULT_OPTS.bkCats;
-if (!S.opts.bkOpts) S.opts.bkOpts = { ...DEFAULT_OPTS.bkOpts };
-if (!S.opts.cookCats) S.opts.cookCats = DEFAULT_OPTS.cookCats;
-if (!S.opts.cookOpts) S.opts.cookOpts = { ...DEFAULT_OPTS.cookOpts };
-if (!S.opts.lightCats) S.opts.lightCats = { ...DEFAULT_OPTS.lightCats };
+// Ensure nested defaults exist
+if (!S.opts.bkCats || !S.opts.bkCats.length) S.opts.bkCats = [...DEFAULT_OPTS.bkCats];
+if (!S.opts.bkOpts) S.opts.bkOpts = JSON.parse(JSON.stringify(DEFAULT_OPTS.bkOpts));
+if (!S.opts.cookCats || !S.opts.cookCats.length) S.opts.cookCats = [...DEFAULT_OPTS.cookCats];
+if (!S.opts.cookOpts) S.opts.cookOpts = JSON.parse(JSON.stringify(DEFAULT_OPTS.cookOpts));
+if (!S.opts.lightCats || !Object.keys(S.opts.lightCats).length) S.opts.lightCats = JSON.parse(JSON.stringify(DEFAULT_OPTS.lightCats));
 
 // Screen management
 function showScreen(name) {
@@ -847,8 +910,6 @@ function updateModeCards() {
 
 // SPINNER
 let spAngle = 0, spRunning = false;
-let bkAngle = 0, bkRunning = false;
-let ckAngle = 0, ckRunning = false;
 
 function startSpinner(mode) {
   S.mode = mode; S.spinResult = null;
@@ -896,44 +957,146 @@ function spDelOpt(i) {
   renderSpOpts(); drawWheel('main-canvas', S.opts[S.spOptKey], spAngle);
 }
 
-// BREAKFAST FLOW
+// ============================================================
+// SWIPEABLE MULTI-WHEEL ENGINE
+// prefix: 'bk' | 'ck' | 'lt'
+// cats: array of category names
+// optsMap: { catName: [opt,...] }
+// selMap: { catName: [selected,...] }
+// ============================================================
+const swipeState = {}; // prefix -> { step, angles:[] }
+
+function buildWheelTrack(prefix, cats, optsMap, selMap, onManualSel, openSettings) {
+  const trackEl = document.getElementById(prefix + '-wheel-track');
+  const wrapEl = document.getElementById(prefix + '-track-wrap');
+  const sw = wrapEl.offsetWidth || 260;
+  trackEl.innerHTML = '';
+  trackEl.style.width = (sw * cats.length) + 'px';
+
+  if (!swipeState[prefix]) swipeState[prefix] = { step: 0, angles: [] };
+  // Ensure angles array sized correctly
+  while (swipeState[prefix].angles.length < cats.length) swipeState[prefix].angles.push(0);
+
+  cats.forEach((cat, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'wheel-slide';
+    slide.style.cssText = `flex-shrink:0;width:${sw}px;display:flex;align-items:center;justify-content:center;`;
+
+    // wheel-outer wrapper with gear button
+    const outer = document.createElement('div');
+    outer.className = 'wheel-outer';
+    outer.style.position = 'relative';
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'wheel-canvas';
+    canvas.id = prefix + '-canvas-' + i;
+    canvas.width = 520; canvas.height = 520;
+    canvas.style.cursor = 'pointer';
+    canvas.addEventListener('click', (e) => wheelClick(e, canvas.id, prefix, i, onManualSel));
+
+    const ptr = document.createElement('div'); ptr.className = 'wheel-ptr';
+    const hub = document.createElement('div'); hub.className = 'wheel-hub';
+
+    // Gear button (fix #5: settings in top-right corner of wheel)
+    const gear = document.createElement('button');
+    gear.className = 'wheel-gear-btn';
+    gear.innerHTML = '⚙';
+    gear.title = '设置 ' + cat + ' 选项';
+    gear.onclick = (e) => { e.stopPropagation(); openSettings(cat, i); };
+
+    outer.append(canvas, ptr, hub, gear);
+    slide.append(outer);
+    trackEl.append(slide);
+
+    drawWheel(canvas.id, optsMap[cat] || [], swipeState[prefix].angles[i]);
+  });
+
+  // Update track position to current step
+  moveTrack(prefix, swipeState[prefix].step);
+
+  // Setup touch swipe (fix #3)
+  setupSwipe(prefix, wrapEl, cats);
+}
+
+function moveTrack(prefix, step) {
+  const wrapEl = document.getElementById(prefix + '-track-wrap');
+  const trackEl = document.getElementById(prefix + '-wheel-track');
+  if (!trackEl) return;
+  const sw = wrapEl.offsetWidth || 260;
+  trackEl.style.transform = `translateX(-${step * sw}px)`;
+  swipeState[prefix].step = step;
+}
+
+function setupSwipe(prefix, wrapEl, cats) {
+  const old = wrapEl._swipeHandler;
+  if (old) {
+    wrapEl.removeEventListener('touchstart', old.start);
+    wrapEl.removeEventListener('touchmove', old.move);
+    wrapEl.removeEventListener('touchend', old.end);
+  }
+  let startX = 0, moved = false;
+  const onStart = (e) => { startX = e.touches[0].clientX; moved = false; };
+  const onMove = (e) => {
+    if (Math.abs(e.touches[0].clientX - startX) > 10) moved = true;
+  };
+  const onEnd = (e) => {
+    if (moved) {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) < 30) return;
+      const cur = swipeState[prefix].step;
+      if (dx < 0 && cur < cats.length - 1) jumpToStep(prefix, cur + 1);
+      else if (dx > 0 && cur > 0) jumpToStep(prefix, cur - 1);
+    }
+  };
+  wrapEl.addEventListener('touchstart', onStart, { passive: true });
+  wrapEl.addEventListener('touchmove', onMove, { passive: true });
+  wrapEl.addEventListener('touchend', onEnd, { passive: true });
+  wrapEl._swipeHandler = { start: onStart, move: onMove, end: onEnd };
+}
+
+function jumpToStep(prefix, step) {
+  swipeState[prefix].step = step;
+  moveTrack(prefix, step);
+  // update step UI
+  if (prefix === 'bk') { S.bkStep = step; refreshBkStepUI(); }
+  else if (prefix === 'ck') { S.ckStep = step; refreshCkStepUI(); }
+  else if (prefix === 'lt') { S.ltStep = step; refreshLtStepUI(); }
+}
+
+// ======================== BREAKFAST ========================
+let bkRunning = false;
+
 function startBreakfast() {
   S.mode = 'breakfast'; S.bkStep = 0; S.bkSel = {};
   S.opts.bkCats.forEach(c => { S.bkSel[c] = []; });
   S.editKey = null;
-  showSub('breakfast'); renderBkStep();
+  if (swipeState['bk']) { swipeState['bk'].step = 0; swipeState['bk'].angles = S.opts.bkCats.map(() => 0); }
+  else swipeState['bk'] = { step: 0, angles: S.opts.bkCats.map(() => 0) };
+  showSub('breakfast');
+  setTimeout(() => {
+    buildWheelTrack('bk', S.opts.bkCats, S.opts.bkOpts, S.bkSel,
+      (cat, item) => bkManualSel(cat, item),
+      (cat, idx) => openSettingsModal('bk', cat));
+    refreshBkStepUI();
+  }, 50);
 }
 
-function renderBkStep() {
+function refreshBkStepUI() {
   const cats = S.opts.bkCats; const step = S.bkStep; const cat = cats[step];
   document.getElementById('bk-step-dots').innerHTML = cats.map((_,i) =>
-    `<div class="sdot ${i<step?'d':i===step?'a':'p'}"></div>`).join('');
-  document.getElementById('bk-step-label').textContent = `第 ${step+1} 步 / 共 ${cats.length} 步`;
-  document.getElementById('bk-step-title').textContent = '选 ' + cat;
-  document.getElementById('bk-again-btn').textContent = '再来个' + cat;
-  document.getElementById('bk-opts-header').querySelector('span').textContent = cat + ' 选项';
-  updateBkSelUI(cat); renderBkOpts(cat);
-  bkAngle = 0;
-  document.getElementById('bk-result-main').textContent = '';
-  drawWheel('bk-canvas', S.opts.bkOpts[cat] || [], 0);
-}
-
-function renderBkOpts(cat) {
-  const opts = S.opts.bkOpts[cat] || [];
-  document.getElementById('bk-opts-list').innerHTML = opts.map((o, i) =>
-    `<div class="opt-row${(S.bkSel[cat]||[]).includes(o)?' selected':''}" onclick="bkManualSel('${esc(cat)}','${esc(o)}')">
-      <div class="opt-dot" style="background:${MC[i%MC.length]}"></div>
-      <span class="opt-name">${o}</span>
-      <span class="opt-check">${(S.bkSel[cat]||[]).includes(o)?'✦':''}</span>
-      <button class="opt-del" onclick="event.stopPropagation();bkDelOpt('${esc(cat)}',${i})">×</button>
-    </div>`).join('');
+    `<div class="sdot ${i<step?'d':i===step?'a':'p'}" onclick="jumpToStep('bk',${i})" title="${cats[i]}"></div>`).join('');
+  document.getElementById('bk-step-label').textContent = `第 ${step+1} / 共 ${cats.length} 个转盘`;
+  document.getElementById('bk-step-title').textContent = '当前：' + cat;
+  const bkR = document.getElementById('bk-result-main');
+  bkR.textContent = ''; bkR.className = 'spin-result-main';
+  updateBkSelUI(cat);
 }
 
 function bkManualSel(cat, name) {
   if (!S.bkSel[cat]) S.bkSel[cat] = [];
   if (S.bkSel[cat].includes(name)) S.bkSel[cat] = S.bkSel[cat].filter(x => x !== name);
   else S.bkSel[cat].push(name);
-  updateBkSelUI(cat); renderBkOpts(cat);
+  updateBkSelUI(cat);
 }
 
 function updateBkSelUI(cat) {
@@ -945,24 +1108,14 @@ function updateBkSelUI(cat) {
 
 function bkRemoveSel(cat, item) {
   S.bkSel[cat] = (S.bkSel[cat]||[]).filter(x=>x!==item);
-  updateBkSelUI(cat); renderBkOpts(cat);
+  updateBkSelUI(cat);
 }
-
-function bkAddOpt() {
-  const inp = document.getElementById('bk-add-input');
-  const v = inp.value.trim(); if (!v) return;
-  const cat = S.opts.bkCats[S.bkStep];
-  if (!S.opts.bkOpts[cat]) S.opts.bkOpts[cat] = [];
-  S.opts.bkOpts[cat].push(v); inp.value = ''; saveState();
-  renderBkStep();
-}
-
-function bkDelOpt(cat, i) { S.opts.bkOpts[cat].splice(i,1); saveState(); renderBkStep(); }
 
 function bkNext() {
   const cats = S.opts.bkCats;
-  if (S.bkStep < cats.length - 1) { S.bkStep++; renderBkStep(); }
-  else {
+  if (S.bkStep < cats.length - 1) {
+    jumpToStep('bk', S.bkStep + 1);
+  } else {
     const note = Object.entries(S.bkSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ');
     S.spinResult = note;
     goRecord();
@@ -972,46 +1125,42 @@ function bkNext() {
 // COOK TYPE
 function startCookType() { showSub('cook-type'); }
 
-// COOK FLOW
+// ======================== COOK FLOW ========================
+let ckRunning = false;
+
 function startCook(type) {
   S.mode = type === 'light' ? 'light' : 'cook';
   S.editKey = null;
   if (type === 'light') { startLight(); return; }
   S.ckStep = 0; S.ckSel = {};
   S.opts.cookCats.forEach(c => { S.ckSel[c] = []; });
-  showSub('cook'); renderCkStep();
+  if (swipeState['ck']) { swipeState['ck'].step = 0; swipeState['ck'].angles = S.opts.cookCats.map(() => 0); }
+  else swipeState['ck'] = { step: 0, angles: S.opts.cookCats.map(() => 0) };
+  showSub('cook');
+  setTimeout(() => {
+    buildWheelTrack('ck', S.opts.cookCats, S.opts.cookOpts, S.ckSel,
+      (cat, item) => ckManualSel(cat, item),
+      (cat, idx) => openSettingsModal('ck', cat));
+    refreshCkStepUI();
+  }, 50);
 }
 
-function renderCkStep() {
+function refreshCkStepUI() {
   const cats = S.opts.cookCats; const step = S.ckStep; const cat = cats[step];
   document.getElementById('ck-step-dots').innerHTML = cats.map((_,i) =>
-    `<div class="sdot ${i<step?'d':i===step?'a':'p'}"></div>`).join('');
-  document.getElementById('ck-step-label').textContent = `第 ${step+1} 步 / 共 ${cats.length} 步`;
-  document.getElementById('ck-step-title').textContent = '选 ' + cat;
-  document.getElementById('ck-again-btn').textContent = '再来个' + cat;
-  document.getElementById('ck-opts-header').querySelector('span').textContent = cat + ' 选项';
-  updateCkSelUI(cat); renderCkOpts(cat);
-  ckAngle = 0;
-  document.getElementById('ck-result-main').textContent = '';
-  drawWheel('ck-canvas', S.opts.cookOpts[cat] || [], 0);
-}
-
-function renderCkOpts(cat) {
-  const opts = S.opts.cookOpts[cat] || [];
-  document.getElementById('ck-opts-list').innerHTML = opts.map((o, i) =>
-    `<div class="opt-row${(S.ckSel[cat]||[]).includes(o)?' selected':''}" onclick="ckManualSel('${esc(cat)}','${esc(o)}')">
-      <div class="opt-dot" style="background:${MC[i%MC.length]}"></div>
-      <span class="opt-name">${o}</span>
-      <span class="opt-check">${(S.ckSel[cat]||[]).includes(o)?'✦':''}</span>
-      <button class="opt-del" onclick="event.stopPropagation();ckDelOpt('${esc(cat)}',${i})">×</button>
-    </div>`).join('');
+    `<div class="sdot ${i<step?'d':i===step?'a':'p'}" onclick="jumpToStep('ck',${i})" title="${cats[i]}"></div>`).join('');
+  document.getElementById('ck-step-label').textContent = `第 ${step+1} / 共 ${cats.length} 个转盘`;
+  document.getElementById('ck-step-title').textContent = '当前：' + cat;
+  const ckR = document.getElementById('ck-result-main');
+  ckR.textContent = ''; ckR.className = 'spin-result-main';
+  updateCkSelUI(cat);
 }
 
 function ckManualSel(cat, name) {
   if (!S.ckSel[cat]) S.ckSel[cat] = [];
   if (S.ckSel[cat].includes(name)) S.ckSel[cat] = S.ckSel[cat].filter(x=>x!==name);
   else S.ckSel[cat].push(name);
-  updateCkSelUI(cat); renderCkOpts(cat);
+  updateCkSelUI(cat);
 }
 
 function updateCkSelUI(cat) {
@@ -1023,72 +1172,50 @@ function updateCkSelUI(cat) {
 
 function ckRemoveSel(cat, item) {
   S.ckSel[cat] = (S.ckSel[cat]||[]).filter(x=>x!==item);
-  updateCkSelUI(cat); renderCkOpts(cat);
+  updateCkSelUI(cat);
 }
-
-function ckAddOpt() {
-  const inp = document.getElementById('ck-add-input');
-  const v = inp.value.trim(); if (!v) return;
-  const cat = S.opts.cookCats[S.ckStep];
-  if (!S.opts.cookOpts[cat]) S.opts.cookOpts[cat] = [];
-  S.opts.cookOpts[cat].push(v); inp.value = ''; saveState();
-  renderCkStep();
-}
-
-function ckDelOpt(cat, i) { S.opts.cookOpts[cat].splice(i,1); saveState(); renderCkStep(); }
 
 function ckNext() {
-  if (S.ckStep < S.opts.cookCats.length - 1) { S.ckStep++; renderCkStep(); }
-  else { goAI(false); }
+  if (S.ckStep < S.opts.cookCats.length - 1) {
+    jumpToStep('ck', S.ckStep + 1);
+  } else { goAI(false); }
 }
 
-function ckRemoveSel(cat, item) {
-  S.ckSel[cat] = (S.ckSel[cat]||[]).filter(x=>x!==item);
-  updateCkSelUI(cat); renderCkOpts(cat);
-}
-
-// LIGHT FOOD - spinner flow
-let ltAngle = 0, ltRunning = false;
+// ======================== LIGHT FOOD ========================
+let ltRunning = false;
 
 function startLight() {
   S.lightSel = {};
   S.ltStep = 0;
   const cats = Object.keys(S.opts.lightCats);
   cats.forEach(c => { S.lightSel[c] = []; });
-  showSub('light'); renderLtStep();
+  if (swipeState['lt']) { swipeState['lt'].step = 0; swipeState['lt'].angles = cats.map(() => 0); }
+  else swipeState['lt'] = { step: 0, angles: cats.map(() => 0) };
+  showSub('light');
+  setTimeout(() => {
+    buildWheelTrack('lt', cats, S.opts.lightCats, S.lightSel,
+      (cat, item) => ltManualSel(cat, item),
+      (cat, idx) => openSettingsModal('lt', cat));
+    refreshLtStepUI();
+  }, 50);
 }
 
-function renderLtStep() {
-  const cats = Object.keys(S.opts.lightCats);
-  const step = S.ltStep; const cat = cats[step];
+function refreshLtStepUI() {
+  const cats = Object.keys(S.opts.lightCats); const step = S.ltStep; const cat = cats[step];
   document.getElementById('lt-step-dots').innerHTML = cats.map((_,i) =>
-    `<div class="sdot ${i<step?'d':i===step?'a':'p'}"></div>`).join('');
-  document.getElementById('lt-step-label').textContent = `第 ${step+1} 步 / 共 ${cats.length} 步`;
-  document.getElementById('lt-step-title').textContent = '选 ' + cat;
-  document.getElementById('lt-again-btn').textContent = '再来个' + cat;
-  document.getElementById('lt-opts-header').querySelector('span').textContent = cat + ' 选项';
-  updateLtSelUI(cat); renderLtOpts(cat);
-  ltAngle = 0;
-  document.getElementById('lt-result-main').textContent = '';
-  drawWheel('lt-canvas', S.opts.lightCats[cat] || [], 0);
-}
-
-function renderLtOpts(cat) {
-  const opts = S.opts.lightCats[cat] || [];
-  document.getElementById('lt-opts-list').innerHTML = opts.map((o, i) =>
-    `<div class="opt-row${(S.lightSel[cat]||[]).includes(o)?' selected':''}" onclick="ltManualSel('${esc(cat)}','${esc(o)}')">
-      <div class="opt-dot" style="background:${MC[i%MC.length]}"></div>
-      <span class="opt-name">${o}</span>
-      <span class="opt-check">${(S.lightSel[cat]||[]).includes(o)?'✦':''}</span>
-      <button class="opt-del" onclick="event.stopPropagation();ltDelOpt('${esc(cat)}',${i})">×</button>
-    </div>`).join('');
+    `<div class="sdot ${i<step?'d':i===step?'a':'p'}" onclick="jumpToStep('lt',${i})" title="${cats[i]}"></div>`).join('');
+  document.getElementById('lt-step-label').textContent = `第 ${step+1} / 共 ${cats.length} 个转盘`;
+  document.getElementById('lt-step-title').textContent = '当前：' + cat;
+  const ltR = document.getElementById('lt-result-main');
+  ltR.textContent = ''; ltR.className = 'spin-result-main';
+  updateLtSelUI(cat);
 }
 
 function ltManualSel(cat, name) {
   if (!S.lightSel[cat]) S.lightSel[cat] = [];
   if (S.lightSel[cat].includes(name)) S.lightSel[cat] = S.lightSel[cat].filter(x=>x!==name);
   else S.lightSel[cat].push(name);
-  updateLtSelUI(cat); renderLtOpts(cat);
+  updateLtSelUI(cat);
 }
 
 function updateLtSelUI(cat) {
@@ -1100,24 +1227,186 @@ function updateLtSelUI(cat) {
 
 function ltRemoveSel(cat, item) {
   S.lightSel[cat] = (S.lightSel[cat]||[]).filter(x=>x!==item);
-  updateLtSelUI(cat); renderLtOpts(cat);
+  updateLtSelUI(cat);
 }
-
-function ltAddOpt() {
-  const inp = document.getElementById('lt-add-input');
-  const v = inp.value.trim(); if (!v) return;
-  const cat = Object.keys(S.opts.lightCats)[S.ltStep];
-  if (!S.opts.lightCats[cat]) S.opts.lightCats[cat] = [];
-  S.opts.lightCats[cat].push(v); inp.value = ''; saveState();
-  renderLtStep();
-}
-
-function ltDelOpt(cat, i) { S.opts.lightCats[cat].splice(i,1); saveState(); renderLtStep(); }
 
 function ltNext() {
   const cats = Object.keys(S.opts.lightCats);
-  if (S.ltStep < cats.length - 1) { S.ltStep++; renderLtStep(); }
-  else { goAI(true); }
+  if (S.ltStep < cats.length - 1) {
+    jumpToStep('lt', S.ltStep + 1);
+  } else { goAI(true); }
+}
+
+// ======================== SETTINGS MODAL (fix #4 + #5) ========================
+// Supports bk / ck / lt flows
+// Opens a bottom sheet to manage options for a specific wheel category
+// Also allows adding/removing the whole wheel (category)
+let _settingsCtx = null; // { prefix, cat }
+
+function openSettingsModal(prefix, cat) {
+  _settingsCtx = { prefix, cat };
+  document.getElementById('settings-modal-title').textContent = '⚙ ' + cat + ' 的选项';
+  renderSettingsBody();
+  document.getElementById('settings-modal').classList.add('open');
+}
+
+function closeSettingsModal() {
+  document.getElementById('settings-modal').classList.remove('open');
+  // Rebuild wheels to reflect changes
+  if (_settingsCtx) {
+    const { prefix } = _settingsCtx;
+    rebuildAfterSettings(prefix);
+    _settingsCtx = null;
+  }
+}
+
+function getOptsMap(prefix) {
+  if (prefix === 'bk') return S.opts.bkOpts;
+  if (prefix === 'ck') return S.opts.cookOpts;
+  if (prefix === 'lt') return S.opts.lightCats;
+}
+function getCats(prefix) {
+  if (prefix === 'bk') return S.opts.bkCats;
+  if (prefix === 'ck') return S.opts.cookCats;
+  if (prefix === 'lt') return Object.keys(S.opts.lightCats);
+}
+function addCat(prefix, newCat) {
+  if (!newCat.trim()) return;
+  if (prefix === 'bk') { if (!S.opts.bkCats.includes(newCat)) { S.opts.bkCats.push(newCat); S.opts.bkOpts[newCat] = []; } }
+  else if (prefix === 'ck') { if (!S.opts.cookCats.includes(newCat)) { S.opts.cookCats.push(newCat); S.opts.cookOpts[newCat] = []; } }
+  else if (prefix === 'lt') { if (!S.opts.lightCats[newCat]) S.opts.lightCats[newCat] = []; }
+  saveState();
+}
+function delCat(prefix, cat) {
+  if (prefix === 'bk') { S.opts.bkCats = S.opts.bkCats.filter(c=>c!==cat); delete S.opts.bkOpts[cat]; }
+  else if (prefix === 'ck') { S.opts.cookCats = S.opts.cookCats.filter(c=>c!==cat); delete S.opts.cookOpts[cat]; }
+  else if (prefix === 'lt') { delete S.opts.lightCats[cat]; }
+  saveState();
+}
+
+function renderSettingsBody() {
+  const { prefix, cat } = _settingsCtx;
+  const optsMap = getOptsMap(prefix);
+  const cats = getCats(prefix);
+  const opts = optsMap[cat] || [];
+  const canDel = cats.length > 1; // Don't allow deleting if only 1 wheel left
+
+  let html = '';
+  // Current options list
+  opts.forEach((o, i) => {
+    html += `<div class="settings-opt-row">
+      <div class="opt-dot" style="background:${MC[i%MC.length]};width:10px;height:10px;border-radius:50%;flex-shrink:0"></div>
+      <span class="settings-opt-name">${o}</span>
+      <button class="settings-opt-del" onclick="settingsDelOpt(${i})">×</button>
+    </div>`;
+  });
+  // Add option row
+  html += `<div class="settings-add-row">
+    <input id="settings-add-inp" placeholder="添加选项…" onkeypress="if(event.key==='Enter')settingsAddOpt()">
+    <button onclick="settingsAddOpt()">添加</button>
+  </div>`;
+  // Divider
+  html += `<div style="height:1px;background:var(--border);margin:4px 0"></div>`;
+  // Add new wheel
+  html += `<div style="font-size:12px;color:var(--text-sub);margin-bottom:4px">增加转盘</div>
+  <div class="settings-add-cat-row">
+    <input id="settings-add-cat-inp" placeholder="新转盘名称（如：甜品）" onkeypress="if(event.key==='Enter')settingsAddCat()">
+    <button onclick="settingsAddCat()">添加</button>
+  </div>`;
+  // Delete current wheel
+  if (canDel) {
+    html += `<button class="settings-del-cat-btn" onclick="settingsDelCat()">删除「${cat}」转盘</button>`;
+  } else {
+    html += `<div style="font-size:11px;color:var(--text-hint);text-align:center">至少保留一个转盘</div>`;
+  }
+
+  document.getElementById('settings-modal-body').innerHTML = html;
+}
+
+function settingsAddOpt() {
+  const inp = document.getElementById('settings-add-inp');
+  const v = inp.value.trim(); if (!v) return;
+  const { prefix, cat } = _settingsCtx;
+  const optsMap = getOptsMap(prefix);
+  if (!optsMap[cat]) optsMap[cat] = [];
+  optsMap[cat].push(v); inp.value = '';
+  saveState(); renderSettingsBody();
+  // Redraw the current wheel live
+  const step = swipeState[prefix] ? swipeState[prefix].step : 0;
+  const cats = getCats(prefix);
+  const catIdx = cats.indexOf(cat);
+  if (catIdx >= 0) {
+    const angle = swipeState[prefix] ? (swipeState[prefix].angles[catIdx] || 0) : 0;
+    drawWheel(prefix + '-canvas-' + catIdx, optsMap[cat], angle);
+  }
+}
+
+function settingsDelOpt(i) {
+  const { prefix, cat } = _settingsCtx;
+  const optsMap = getOptsMap(prefix);
+  if (!optsMap[cat] || !optsMap[cat].length) return;
+  optsMap[cat].splice(i, 1);
+  saveState(); renderSettingsBody();
+  const cats = getCats(prefix);
+  const catIdx = cats.indexOf(cat);
+  if (catIdx >= 0) {
+    const angle = swipeState[prefix] ? (swipeState[prefix].angles[catIdx] || 0) : 0;
+    drawWheel(prefix + '-canvas-' + catIdx, optsMap[cat], angle);
+  }
+}
+
+function settingsAddCat() {
+  const inp = document.getElementById('settings-add-cat-inp');
+  const v = inp.value.trim(); if (!v) return;
+  const { prefix } = _settingsCtx;
+  addCat(prefix, v); inp.value = '';
+  // Switch to editing the new cat
+  _settingsCtx.cat = v;
+  document.getElementById('settings-modal-title').textContent = '⚙ ' + v + ' 的选项';
+  renderSettingsBody();
+}
+
+function settingsDelCat() {
+  const { prefix, cat } = _settingsCtx;
+  const cats = getCats(prefix);
+  if (cats.length <= 1) { toast('至少保留一个转盘'); return; }
+  if (!confirm(`确定删除「${cat}」转盘吗？`)) return;
+  delCat(prefix, cat);
+  // Switch focus to first remaining cat
+  const newCats = getCats(prefix);
+  _settingsCtx.cat = newCats[0];
+  document.getElementById('settings-modal-title').textContent = '⚙ ' + newCats[0] + ' 的选项';
+  renderSettingsBody();
+}
+
+function rebuildAfterSettings(prefix) {
+  if (prefix === 'bk') {
+    // Ensure selections stay valid
+    S.opts.bkCats.forEach(c => { if (!S.bkSel[c]) S.bkSel[c] = []; });
+    if (S.bkStep >= S.opts.bkCats.length) S.bkStep = Math.max(0, S.opts.bkCats.length - 1);
+    swipeState['bk'] = { step: S.bkStep, angles: S.opts.bkCats.map((_,i) => (swipeState['bk']?.angles[i] || 0)) };
+    buildWheelTrack('bk', S.opts.bkCats, S.opts.bkOpts, S.bkSel,
+      (cat, item) => bkManualSel(cat, item),
+      (cat) => openSettingsModal('bk', cat));
+    refreshBkStepUI();
+  } else if (prefix === 'ck') {
+    S.opts.cookCats.forEach(c => { if (!S.ckSel[c]) S.ckSel[c] = []; });
+    if (S.ckStep >= S.opts.cookCats.length) S.ckStep = Math.max(0, S.opts.cookCats.length - 1);
+    swipeState['ck'] = { step: S.ckStep, angles: S.opts.cookCats.map((_,i) => (swipeState['ck']?.angles[i] || 0)) };
+    buildWheelTrack('ck', S.opts.cookCats, S.opts.cookOpts, S.ckSel,
+      (cat, item) => ckManualSel(cat, item),
+      (cat) => openSettingsModal('ck', cat));
+    refreshCkStepUI();
+  } else if (prefix === 'lt') {
+    const cats = Object.keys(S.opts.lightCats);
+    cats.forEach(c => { if (!S.lightSel[c]) S.lightSel[c] = []; });
+    if (S.ltStep >= cats.length) S.ltStep = Math.max(0, cats.length - 1);
+    swipeState['lt'] = { step: S.ltStep, angles: cats.map((_,i) => (swipeState['lt']?.angles[i] || 0)) };
+    buildWheelTrack('lt', cats, S.opts.lightCats, S.lightSel,
+      (cat, item) => ltManualSel(cat, item),
+      (cat) => openSettingsModal('lt', cat));
+    refreshLtStepUI();
+  }
 }
 
 // SPIN
@@ -1136,46 +1425,119 @@ function doSpin(which) {
       renderSpOpts();
     });
   } else if (which === 'bk') {
-    const cat = S.opts.bkCats[S.bkStep];
-    opts = S.opts.bkOpts[cat] || []; canvasId = 'bk-canvas';
+    const step = swipeState['bk'] ? swipeState['bk'].step : S.bkStep;
+    S.bkStep = step;
+    const cat = S.opts.bkCats[step];
+    opts = S.opts.bkOpts[cat] || []; canvasId = 'bk-canvas-' + step;
     if (bkRunning) return; if (!opts.length) { toast('请先添加选项'); return; }
     bkRunning = true;
-    const a0 = bkAngle;
+    const a0 = swipeState['bk'] ? (swipeState['bk'].angles[step] || 0) : 0;
     spinAnim(opts, canvasId, a0, (res, finalA) => {
-      bkAngle = finalA; bkRunning = false;
-      document.getElementById('bk-result-main').textContent = '✦ ' + res;
+      if (swipeState['bk']) swipeState['bk'].angles[step] = finalA;
+      bkRunning = false;
+      const el = document.getElementById('bk-result-main');
+      el.textContent = '本次：' + res; el.className = 'spin-result-main has-result';
       if (!S.bkSel[cat]) S.bkSel[cat] = [];
       if (!S.bkSel[cat].includes(res)) S.bkSel[cat].push(res);
-      updateBkSelUI(cat); renderBkOpts(cat);
+      updateBkSelUI(cat);
     });
   } else if (which === 'ck') {
-    const cat = S.opts.cookCats[S.ckStep];
-    opts = S.opts.cookOpts[cat] || []; canvasId = 'ck-canvas';
+    const step = swipeState['ck'] ? swipeState['ck'].step : S.ckStep;
+    S.ckStep = step;
+    const cat = S.opts.cookCats[step];
+    opts = S.opts.cookOpts[cat] || []; canvasId = 'ck-canvas-' + step;
     if (ckRunning) return; if (!opts.length) { toast('请先添加菜品'); return; }
     ckRunning = true;
-    const a0 = ckAngle;
+    const a0 = swipeState['ck'] ? (swipeState['ck'].angles[step] || 0) : 0;
     spinAnim(opts, canvasId, a0, (res, finalA) => {
-      ckAngle = finalA; ckRunning = false;
-      document.getElementById('ck-result-main').textContent = '✦ ' + res;
+      if (swipeState['ck']) swipeState['ck'].angles[step] = finalA;
+      ckRunning = false;
+      const el = document.getElementById('ck-result-main');
+      el.textContent = '本次：' + res; el.className = 'spin-result-main has-result';
       if (!S.ckSel[cat]) S.ckSel[cat] = [];
       if (!S.ckSel[cat].includes(res)) S.ckSel[cat].push(res);
-      updateCkSelUI(cat); renderCkOpts(cat);
+      updateCkSelUI(cat);
     });
   } else if (which === 'lt') {
     const cats = Object.keys(S.opts.lightCats);
-    const cat = cats[S.ltStep];
-    opts = S.opts.lightCats[cat] || []; canvasId = 'lt-canvas';
+    const step = swipeState['lt'] ? swipeState['lt'].step : S.ltStep;
+    S.ltStep = step;
+    const cat = cats[step];
+    opts = S.opts.lightCats[cat] || []; canvasId = 'lt-canvas-' + step;
     if (ltRunning) return; if (!opts.length) { toast('请先添加选项'); return; }
     ltRunning = true;
-    const a0 = ltAngle;
+    const a0 = swipeState['lt'] ? (swipeState['lt'].angles[step] || 0) : 0;
     spinAnim(opts, canvasId, a0, (res, finalA) => {
-      ltAngle = finalA; ltRunning = false;
-      document.getElementById('lt-result-main').textContent = '✦ ' + res;
+      if (swipeState['lt']) swipeState['lt'].angles[step] = finalA;
+      ltRunning = false;
+      const el = document.getElementById('lt-result-main');
+      el.textContent = '本次：' + res; el.className = 'spin-result-main has-result';
       if (!S.lightSel[cat]) S.lightSel[cat] = [];
       if (!S.lightSel[cat].includes(res)) S.lightSel[cat].push(res);
-      updateLtSelUI(cat); renderLtOpts(cat);
+      updateLtSelUI(cat);
     });
   }
+}
+
+function getWheelResult(opts, angle) {
+  const n = opts.length;
+  const slice = (Math.PI * 2) / n;
+  const norm = ((-angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+  const idx = Math.floor(norm / slice) % n;
+  return Math.max(0, idx);
+}
+
+// Click on wheel to select option
+function wheelClick(e, canvasId, prefix, step, onManualSel) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const rect = canvas.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  let clientX, clientY;
+  if (e.changedTouches && e.changedTouches.length) {
+    clientX = e.changedTouches[0].clientX; clientY = e.changedTouches[0].clientY;
+  } else if (e.touches && e.touches.length) {
+    clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
+  } else {
+    clientX = e.clientX; clientY = e.clientY;
+  }
+  if (!clientX || !clientY) return;
+  const dx = clientX - cx;
+  const dy = clientY - cy;
+  const r = rect.width / 2;
+  if (dx*dx + dy*dy > r*r * 0.95) return;
+  // Angle of click from top, clockwise
+  let clickAngle = Math.atan2(dy, dx) + Math.PI / 2;
+  if (clickAngle < 0) clickAngle += Math.PI * 2;
+  // Current rotation
+  const sw = swipeState[prefix];
+  const angle = sw ? (sw.angles[step] || 0) : 0;
+  // Get options for this category
+  let cat, opts;
+  if (prefix === 'bk') { cat = S.opts.bkCats[step]; opts = S.opts.bkOpts[cat] || []; }
+  else if (prefix === 'ck') { cat = S.opts.cookCats[step]; opts = S.opts.cookOpts[cat] || []; }
+  else { const cks = Object.keys(S.opts.lightCats); cat = cks[step]; opts = S.opts.lightCats[cat] || []; }
+  if (!opts.length) return;
+  const slice = (Math.PI * 2) / opts.length;
+  const adjusted = ((clickAngle - angle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+  const idx = Math.floor(adjusted / slice) % opts.length;
+  const item = opts[idx];
+  if (!item) return;
+  // Toggle selection
+  onManualSel(cat, item);
+  // Show result
+  const resEl = document.getElementById(prefix === 'bk' ? 'bk-result-main' : prefix === 'ck' ? 'ck-result-main' : 'lt-result-main');
+  resEl.textContent = '✦ ' + item; resEl.className = 'spin-result-main has-result';
+  // Flash highlight
+  const ctx = canvas.getContext('2d');
+  const sa = idx * slice - Math.PI / 2 + angle;
+  ctx.save();
+  ctx.beginPath(); ctx.moveTo(260, 260);
+  ctx.arc(260, 260, 248, sa, sa + slice); ctx.closePath();
+  ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fill();
+  ctx.restore();
+  setTimeout(() => drawWheel(canvasId, opts, angle), 180);
 }
 
 function spinAnim(opts, canvasId, startAngle, onDone) {
@@ -1189,10 +1551,8 @@ function spinAnim(opts, canvasId, startAngle, onDone) {
     const a = startAngle + total * e;
     drawWheel(canvasId, opts, a);
     if (t < 1) { requestAnimationFrame(frame); return; }
-    const slice = (Math.PI * 2) / opts.length;
-    const norm = ((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-    const idx = Math.floor(((Math.PI * 2 - norm + Math.PI / 2) % (Math.PI * 2)) / slice) % opts.length;
-    onDone(opts[Math.max(0, idx)], a);
+    const idx = getWheelResult(opts, a);
+    onDone(opts[idx], a);
   }
   requestAnimationFrame(frame);
 }
@@ -1324,6 +1684,37 @@ function toast(msg) {
   const t = document.getElementById('toast');  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
 }
+
+// Single wheel click-to-select (spinner mode)
+document.getElementById('main-canvas').addEventListener('click', (e) => {
+  if (spRunning || !S.spOptKey) return;
+  const canvas = e.target;
+  const rect = canvas.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const dx = e.clientX - cx;
+  const dy = e.clientY - cy;
+  const r = rect.width / 2;
+  if (dx*dx + dy*dy > r*r * 0.95) return;
+  let clickAngle = Math.atan2(dy, dx) + Math.PI / 2;
+  if (clickAngle < 0) clickAngle += Math.PI * 2;
+  const angle = spAngle;
+  const opts = S.opts[S.spOptKey];
+  if (!opts || !opts.length) return;
+  const slice = (Math.PI * 2) / opts.length;
+  const adjusted = ((clickAngle - angle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+  const idx = Math.floor(adjusted / slice) % opts.length;
+  const item = opts[idx];
+  if (!item) return;
+  spManualSel(idx);
+  // Flash
+  const ctx = canvas.getContext('2d');
+  const sa = idx * slice - Math.PI / 2 + angle;
+  ctx.save(); ctx.beginPath(); ctx.moveTo(260, 260);
+  ctx.arc(260, 260, 248, sa, sa + slice); ctx.closePath();
+  ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fill(); ctx.restore();
+  setTimeout(() => drawWheel('main-canvas', opts, spAngle), 180);
+});
 
 // Init
 renderCal();
