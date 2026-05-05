@@ -548,6 +548,7 @@ textarea.note-input:focus { border-color: var(--pink); }
 
   <!-- NAV -->
   <nav class="nav">
+    <div id="sync-indicator" style="position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text-hint);z-index:5"></div>
     <button class="nav-btn active" id="nav-cal" onclick="showScreen('calendar')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       日历
@@ -588,7 +589,104 @@ textarea.note-input:focus { border-color: var(--pink); }
 
 <div class="toast" id="toast"></div>
 
+<!-- Firebase SDK for cloud sync -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+// ===== Firebase Cloud Sync =====
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC0Hs46U8Rsqiw0RvR2_0lUf4R4h1D6gkM",
+  authDomain: "what-to-eat-6a933.firebaseapp.com",
+  databaseURL: "https://what-to-eat-6a933-default-rtdb.firebaseio.com",
+  projectId: "what-to-eat-6a933",
+  storageBucket: "what-to-eat-6a933.firebasestorage.app",
+  messagingSenderId: "619473359229",
+  appId: "1:619473359229:web:653d537d9539147f83a126"
+};
+
+let db = null;
+let uid = localStorage.getItem("meal_uid") || "u_" + Math.random().toString(36).substr(2, 9);
+localStorage.setItem("meal_uid", uid);
+let syncStatus = "offline"; // offline | syncing | synced | error
+let syncTimer = null;
+
+function initFirebase() {
+  try {
+    if (FIREBASE_CONFIG.apiKey === "YOUR_API_KEY") {
+      console.log("Firebase not configured yet");
+      return;
+    }
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    console.log("Firebase initialized for user:", uid);
+    pullFromCloud();
+  } catch(e) {
+    console.error("Firebase init error:", e);
+  }
+}
+
+function pushToCloud() {
+  if (!db) return;
+  // Debounce: wait 2 seconds before pushing
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => {
+    syncStatus = "syncing";
+    updateSyncUI();
+    try {
+      db.ref("users/" + uid).set({
+        records: S.records,
+        opts: S.opts,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      }).then(() => {
+        syncStatus = "synced";
+        updateSyncUI();
+        setTimeout(() => { if(syncStatus==="synced"){syncStatus="idle";updateSyncUI();} }, 5000);
+      }).catch(e => {
+        syncStatus = "error";
+        updateSyncUI();
+        console.error("Push error:", e);
+      });
+    } catch(e) {
+      syncStatus = "error";
+      updateSyncUI();
+    }
+  }, 2000);
+}
+
+function pullFromCloud() {
+  if (!db) return;
+  syncStatus = "syncing";
+  updateSyncUI();
+  db.ref("users/" + uid).once("value").then(snapshot => {
+    const data = snapshot.val();
+    if (data && data.records) {
+      // Merge: cloud data takes priority for records not in local
+      S.records = { ...S.records, ...data.records };
+      if (data.opts) {
+        S.opts = deepMergeOpts(DEFAULT_OPTS, data.opts);
+      }
+      saveState();
+      syncStatus = "synced";
+      renderCal();
+    } else {
+      syncStatus = "synced";
+    }
+    updateSyncUI();
+  }).catch(e => {
+    syncStatus = "error";
+    updateSyncUI();
+  });
+}
+
+function updateSyncUI() {
+  const el = document.getElementById("sync-indicator");
+  if (!el) return;
+  const icons = { offline: "☁️ 未配置", syncing: "🔄 同步中...", synced: "✅ 已同步", error: "❌ 同步失败", idle: "" };
+  el.textContent = icons[syncStatus] || "";
+}
+
+
 const DSKEY = 'sk-3745741b78424612b2d7c525209331d3';
 
 const MC = ['#F4A7C3','#A8D5BA','#B5C8F0','#F7C99A','#C5B4E3','#F0D5A0','#AADDE8','#F4B8B8','#B8E0C5','#D4B8E0'];
@@ -617,6 +715,7 @@ function loadState() {
   } catch(e) { return null; }
 }
 function saveState() {
+  pushToCloud();
   try {
     // Deep clone to ensure nested objects are fully serialized
     const data = JSON.parse(JSON.stringify({ records: S.records, opts: S.opts }));
@@ -1717,6 +1816,7 @@ document.getElementById('main-canvas').addEventListener('click', (e) => {
 });
 
 // Init
+initFirebase();
 renderCal();
 showScreen('calendar');
 const today = new Date();
