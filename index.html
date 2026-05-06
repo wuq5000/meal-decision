@@ -6,1835 +6,1161 @@
 <title>吃啥</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
-
 :root {
-  --pink: #F4A7C3; --pink-deep: #D4537E; --pink-light: #FDF0F5; --pink-dark: #72243E;
-  --mint: #A8D5BA; --mint-light: #F0FBF6; --mint-dark: #27500A;
-  --lavender: #C5B4E3; --lavender-light: #F3F0FD; --lavender-dark: #3C3489;
-  --peach: #F7C99A; --peach-light: #FEF6ED; --peach-dark: #633806;
-  --sky: #B5C8F0; --sky-light: #EEF3FC; --sky-dark: #0C447C;
-  --sage: #B8D8BE; --sage-light: #EEF7F0;
-  --bg: #FAFAF8; --surface: #FFFFFF; --border: rgba(0,0,0,0.08);
-  --text: #1A1A18; --text-sub: #666660; --text-hint: #AAAAAA;
-  --radius: 14px; --radius-sm: 8px; --radius-lg: 20px;
-  --nav-h: 60px;
+  --pink:#F4A7C3;--pink-d:#D4537E;--pink-l:#FDF0F5;--pink-dk:#72243E;
+  --mint:#A8D5BA;--mint-l:#F0FBF6;--mint-dk:#27500A;
+  --lav:#C5B4E3;--lav-l:#F3F0FD;--lav-dk:#3C3489;
+  --peach:#F7C99A;--peach-l:#FEF6ED;--peach-dk:#633806;
+  --sky:#B5C8F0;--sky-l:#EEF3FC;--sky-dk:#0C447C;
+  --bg:#FAFAF8;--surf:#FFFFFF;--bdr:rgba(0,0,0,0.08);
+  --tx:#1A1A18;--tx2:#666660;--tx3:#AAAAAA;
+  --r:14px;--r2:8px;--r3:20px;--nav:60px;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overflow: hidden; }
-body { font-family: 'Noto Sans SC', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); }
-
-.app { width: 100%; max-width: 430px; height: 100dvh; margin: 0 auto; display: flex; flex-direction: column; background: var(--surface); position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.06); }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Noto Sans SC','PingFang SC',sans-serif;background:var(--bg);color:var(--tx)}
+.app{width:100%;max-width:430px;height:100dvh;margin:0 auto;display:flex;flex-direction:column;background:var(--surf);position:relative;overflow:hidden}
 
 /* SCREENS */
-.screen { position: absolute; inset: 0; bottom: var(--nav-h); overflow-y: auto; overflow-x: hidden; display: none; flex-direction: column; -webkit-overflow-scrolling: touch; background: var(--bg); }
-.screen.active { display: flex; }
-.sub-screen { position: absolute; inset: 0; bottom: var(--nav-h); overflow-y: auto; overflow-x: hidden; display: none; flex-direction: column; background: var(--surface); z-index: 10; -webkit-overflow-scrolling: touch; transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1); }
-.sub-screen.active { display: flex; transform: translateX(0); }
+.scr{position:absolute;inset:0;bottom:var(--nav);overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;-webkit-overflow-scrolling:touch;background:var(--bg)}
+.scr.on{display:flex}
+.sub{position:absolute;inset:0;bottom:var(--nav);overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;background:var(--surf);z-index:10;-webkit-overflow-scrolling:touch}
+.sub.on{display:flex}
 
 /* NAV */
-.nav { height: var(--nav-h); display: flex; align-items: stretch; border-top: 0.5px solid var(--border); background: var(--surface); position: absolute; bottom: 0; left: 0; right: 0; z-index: 20; }
-.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: none; background: none; cursor: pointer; font-size: 10px; color: var(--text-hint); transition: color .2s; }
-.nav-btn.active { color: var(--pink-deep); }
-.nav-btn svg { width: 22px; height: 22px; }
-.nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--pink); opacity: 0; transition: opacity .2s; }
-.nav-btn.active .nav-dot { opacity: 1; }
+.nav{height:var(--nav);display:flex;align-items:stretch;border-top:0.5px solid var(--bdr);background:var(--surf);position:absolute;bottom:0;left:0;right:0;z-index:20}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:none;cursor:pointer;font-size:10px;color:var(--tx3);font-family:inherit}
+.nb.on{color:var(--pink-d)}
+.nb svg{width:22px;height:22px}
+.ndot{width:4px;height:4px;border-radius:50%;background:var(--pink);opacity:0}
+.nb.on .ndot{opacity:1}
 
 /* TOP BAR */
-.top-bar { padding: 16px 20px 0; display: flex; align-items: center; justify-content: space-between; background: var(--surface); flex-shrink: 0; }
-.top-title { font-size: 22px; font-weight: 700; letter-spacing: -.5px; }
-.back-btn { display: flex; align-items: center; gap: 4px; border: none; background: none; color: var(--text-sub); font-size: 14px; cursor: pointer; padding: 8px 0; font-family: inherit; }
-.back-btn svg { width: 18px; height: 18px; }
+.topbar{padding:14px 20px 0;display:flex;align-items:center;background:var(--surf);flex-shrink:0;gap:8px}
+.back{display:flex;align-items:center;gap:4px;border:none;background:none;color:var(--tx2);font-size:14px;cursor:pointer;padding:6px 0;font-family:inherit}
+.back svg{width:18px;height:18px}
 
 /* CALENDAR */
-.cal-wrap { background: var(--surface); padding: 0 16px 12px; flex-shrink: 0; }
-.cal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 4px 12px; }
-.cal-month { font-size: 17px; font-weight: 700; }
-.cal-nav-btns { display: flex; gap: 6px; }
-.cal-nav-btns button { width: 32px; height: 32px; border-radius: 50%; border: 0.5px solid var(--border); background: var(--bg); cursor: pointer; font-size: 16px; color: var(--text); display: flex; align-items: center; justify-content: center; }
-.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 1px; }
-.cal-wd { font-size: 11px; color: var(--text-hint); text-align: center; padding: 4px 0 6px; }
-.cal-day { display: flex; flex-direction: column; align-items: center; padding: 3px 1px; cursor: pointer; border-radius: 10px; transition: background .15s; min-height: 44px; }
-.cal-day:hover { background: var(--pink-light); }
-.cal-day.other-month .day-num { color: var(--text-hint); }
-.day-num { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 13px; border-radius: 50%; transition: all .15s; }
-.cal-day.today .day-num { background: var(--pink); color: var(--pink-dark); font-weight: 700; }
-.cal-day.selected:not(.today) .day-num { border: 1.5px solid var(--pink-deep); color: var(--pink-deep); font-weight: 500; }
-.meal-dots { display: flex; gap: 2px; margin-top: 2px; height: 5px; }
-.mdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.cal-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 10px;background:var(--surf)}
+.cal-mo{font-size:17px;font-weight:700}
+.cal-nav{display:flex;gap:6px}
+.cal-nav button{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--bdr);background:var(--bg);cursor:pointer;font-size:16px;color:var(--tx);display:flex;align-items:center;justify-content:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:0 16px 10px;background:var(--surf)}
+.cwd{font-size:11px;color:var(--tx3);text-align:center;padding:4px 0 6px}
+.cday{display:flex;flex-direction:column;align-items:center;padding:3px 1px;cursor:pointer;border-radius:10px;min-height:44px;transition:background .15s}
+.cday:hover{background:var(--pink-l)}
+.cday.other .dnum{color:var(--tx3)}
+.dnum{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;border-radius:50%}
+.cday.today .dnum{background:var(--pink);color:var(--pink-dk);font-weight:700}
+.cday.sel:not(.today) .dnum{border:1.5px solid var(--pink-d);color:var(--pink-d);font-weight:500}
+.mdots{display:flex;gap:2px;margin-top:2px;height:5px}
+.mdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
 /* DAY RECORDS */
-.day-records { flex: 1; padding: 0 16px 16px; }
-.day-records-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 10px; }
-.day-records-title { font-size: 14px; font-weight: 500; color: var(--text-sub); }
-.add-record-btn { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--pink-deep); border: none; background: none; cursor: pointer; font-family: inherit; padding: 4px 0; }
-.meal-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-.meal-card-info { flex: 1; min-width: 0; }
-.meal-card-label { font-size: 11px; color: var(--text-hint); margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
-.meal-card-content { font-size: 13px; line-height: 1.5; word-break: break-all; }
-.meal-card-photo { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; cursor: pointer; flex-shrink: 0; background: var(--bg); border: 0.5px solid var(--border); }
-.meal-card-actions { display: flex; gap: 4px; margin-top: 6px; }
-.meal-card-btn { font-size: 11px; border: 0.5px solid var(--border); border-radius: 6px; background: none; cursor: pointer; padding: 3px 8px; color: var(--text-sub); font-family: inherit; }
-.meal-card-btn.del { color: #E24B4A; border-color: #F7C1C1; }
-.empty-state { text-align: center; padding: 24px 0; color: var(--text-hint); font-size: 13px; }
+.drec{flex:1;padding:0 16px 80px}
+.drec-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 0 10px}
+.drec-title{font-size:14px;font-weight:500;color:var(--tx2)}
+.add-btn{font-size:13px;color:var(--pink-d);border:none;background:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:3px}
+.mcard{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--r);padding:12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}
+.mcard-bar{width:3px;min-height:44px;border-radius:2px;flex-shrink:0;align-self:stretch}
+.mcard-info{flex:1;min-width:0}
+.mcard-lbl{font-size:11px;color:var(--tx3);margin-bottom:3px;display:flex;align-items:center;gap:4px}
+.mcard-txt{font-size:13px;line-height:1.5;word-break:break-all}
+.mcard-acts{display:flex;gap:4px;margin-top:7px}
+.mcard-btn{font-size:11px;border:0.5px solid var(--bdr);border-radius:6px;background:none;cursor:pointer;padding:3px 8px;color:var(--tx2);font-family:inherit}
+.mcard-btn.del{color:#E24B4A;border-color:#F7C1C1}
+.mthumb{width:56px;height:56px;border-radius:10px;object-fit:cover;cursor:pointer;flex-shrink:0;background:var(--bg);border:0.5px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:22px}
+.empty{text-align:center;padding:28px 0;color:var(--tx3);font-size:13px;line-height:2}
 
 /* DECIDE */
-.decide-hero { padding: 20px 20px 14px; background: var(--surface); flex-shrink: 0; }
-.decide-date { font-size: 12px; color: var(--text-hint); margin-bottom: 3px; }
-.decide-title { font-size: 24px; font-weight: 700; letter-spacing: -.5px; }
-.meal-tabs { display: flex; gap: 8px; padding: 0 20px 16px; flex-shrink: 0; }
-.meal-tab { flex: 1; padding: 10px 6px 8px; border: 0.5px solid var(--border); border-radius: var(--radius); text-align: center; cursor: pointer; font-size: 12px; font-family: inherit; transition: all .15s; color: var(--text-sub); background: var(--surface); }
-.meal-tab .tab-em { font-size: 20px; display: block; margin-bottom: 2px; }
-.meal-tab.active { border-color: var(--pink); background: var(--pink-light); color: var(--pink-dark); font-weight: 500; }
-.mode-list { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
-.mode-card { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--surface); transition: all .2s; }
-.mode-card:active { transform: scale(.98); }
-.mode-ic { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-.mode-txt .t { font-size: 15px; font-weight: 500; margin-bottom: 1px; }
-.mode-txt .s { font-size: 12px; color: var(--text-sub); }
-.mode-arr { margin-left: auto; color: var(--text-hint); font-size: 18px; }
+.dec-hero{padding:20px 20px 12px;background:var(--surf);flex-shrink:0}
+.dec-date{font-size:12px;color:var(--tx3);margin-bottom:3px}
+.dec-ttl{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.mtabs{display:flex;gap:8px;padding:0 20px 14px;flex-shrink:0}
+.mtab{flex:1;padding:10px 6px 8px;border:0.5px solid var(--bdr);border-radius:var(--r);text-align:center;cursor:pointer;font-size:12px;font-family:inherit;color:var(--tx2);background:var(--surf)}
+.mtab .em{font-size:20px;display:block;margin-bottom:2px}
+.mtab.on{border-color:var(--pink);background:var(--pink-l);color:var(--pink-dk);font-weight:500}
+.mcards{padding:0 20px 20px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+.mmode{border:0.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;background:var(--surf);transition:all .2s}
+.mmode:active{transform:scale(.98)}
+.mic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.mt{font-size:15px;font-weight:500;margin-bottom:1px}
+.ms{font-size:12px;color:var(--tx2)}
+.marr{margin-left:auto;color:var(--tx3);font-size:18px}
 
-/* SPINNER */
-.spinner-wrap { padding: 0 20px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.sp-title { font-size: 18px; font-weight: 700; text-align: center; }
-.sp-sub { font-size: 12px; color: var(--text-sub); text-align: center; }
-.wheel-outer { position: relative; width: min(260px, 68vw); height: min(260px, 68vw); flex-shrink: 0; }
-.wheel-canvas { width: 100%; height: 100%; border-radius: 50%; display: block; cursor: pointer; }
-.wheel-ptr { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 16px solid var(--pink-deep); filter: drop-shadow(0 2px 4px rgba(212,83,126,.3)); }
-.wheel-hub { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 32px; height: 32px; border-radius: 50%; background: var(--surface); border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
-.spin-result-box { min-height: 48px; text-align: center; }
-.spin-result-main { font-size: 22px; font-weight: 700; color: var(--pink-dark); letter-spacing: .5px; }
-.spin-result-main.has-result { background: var(--pink-light); border-radius: 20px; padding: 6px 18px; display: inline-block; }
-.spin-result-hint { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
-.spin-btn { padding: 13px 48px; background: var(--pink); color: var(--pink-dark); border: none; border-radius: 50px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all .15s; letter-spacing: .5px; }
-.spin-btn:active { transform: scale(.96); background: var(--pink-deep); color: white; }
+/* SPINNER SCREEN */
+.sp-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 20px 20px;gap:8px;min-height:0}
 
-/* OPTIONS PANEL */
-.opts-panel { border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; width: 100%; background: var(--surface); }
-.opts-header { padding: 9px 14px; background: var(--bg); font-size: 12px; color: var(--text-sub); display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid var(--border); }
-.opts-list { max-height: 160px; overflow-y: auto; }
-.opt-row { padding: 9px 14px; font-size: 13px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; gap: 8px; cursor: pointer; transition: background .12s; }
-.opt-row:last-child { border-bottom: none; }
-.opt-row:hover, .opt-row:active { background: var(--pink-light); }
-.opt-row.selected { background: var(--pink-light); }
-.opt-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.opt-name { flex: 1; }
-.opt-check { font-size: 14px; color: var(--pink-deep); min-width: 16px; text-align: right; }
-.opt-del { border: none; background: none; cursor: pointer; color: var(--text-hint); font-size: 16px; padding: 0 2px; line-height: 1; }
-.opt-del:hover { color: #E24B4A; }
-.add-opt { display: flex; gap: 8px; padding: 9px 14px; border-top: 0.5px solid var(--border); }
-.add-opt input { flex: 1; border: none; background: none; font-size: 13px; outline: none; color: var(--text); font-family: inherit; }
-.add-opt button { font-size: 13px; color: var(--pink-deep); border: none; background: none; cursor: pointer; font-weight: 500; font-family: inherit; }
+/* SLIDE TABS (swipeable step indicator) */
+.slide-tabs{width:100%;display:flex;align-items:center;gap:6px;padding:4px 0 8px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.slide-tabs::-webkit-scrollbar{display:none}
+.stab{flex-shrink:0;padding:5px 14px;border-radius:20px;font-size:13px;border:0.5px solid var(--bdr);background:var(--surf);cursor:pointer;color:var(--tx2);font-family:inherit;transition:all .2s}
+.stab.on{background:var(--pink-l);border-color:var(--pink);color:var(--pink-dk);font-weight:500}
+.stab.done{background:var(--mint-l);border-color:var(--mint);color:var(--mint-dk)}
+.stab-add{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:0.5px dashed var(--bdr);background:none;cursor:pointer;color:var(--tx3);font-size:18px;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.stab-del{margin-left:3px;font-size:11px;opacity:.7}
+
+/* WHEEL */
+.wheel-outer{position:relative;flex-shrink:0}
+.wheel-canvas{display:block;border-radius:50%}
+.wheel-ptr{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:16px solid var(--pink-d);filter:drop-shadow(0 2px 4px rgba(212,83,126,.3))}
+.wheel-hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;background:var(--surf);border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.spin-result{min-height:40px;text-align:center}
+.spin-main{font-size:20px;font-weight:700;color:var(--pink-dk)}
+.spin-hint{font-size:11px;color:var(--tx3);margin-top:2px}
+.spin-btn{padding:12px 44px;background:var(--pink);color:var(--pink-dk);border:none;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.5px;transition:all .15s;flex-shrink:0}
+.spin-btn:active{transform:scale(.96);background:var(--pink-d);color:#fff}
 
 /* TAGS */
-.tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; }
-.tag { padding: 5px 10px; background: var(--pink-light); color: var(--pink-dark); border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 4px; border: 0.5px solid #F4C0D1; }
-.tag button { background: none; border: none; cursor: pointer; color: var(--pink-dark); font-size: 14px; padding: 0; line-height: 1; }
+.tags{display:flex;flex-wrap:wrap;gap:6px;width:100%;min-height:28px}
+.tag{padding:4px 10px;background:var(--pink-l);color:var(--pink-dk);border-radius:20px;font-size:12px;display:flex;align-items:center;gap:4px;border:0.5px solid #F4C0D1}
+.tag button{background:none;border:none;cursor:pointer;color:var(--pink-dk);font-size:13px;padding:0;line-height:1}
 
-/* STEP DOTS */
-.step-dots { display: flex; align-items: center; gap: 4px; }
-.sdot { height: 6px; border-radius: 3px; transition: all .3s; flex-shrink: 0; cursor: pointer; }
-.sdot.p { width: 6px; background: var(--border); }
-.sdot.a { width: 18px; background: var(--pink); }
-.sdot.d { width: 6px; background: var(--mint); }
+/* OPTS SHEET (bottom drawer) */
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:none;align-items:flex-end}
+.sheet-overlay.on{display:flex}
+.sheet{background:var(--surf);border-radius:20px 20px 0 0;width:100%;max-width:430px;margin:0 auto;max-height:80dvh;display:flex;flex-direction:column}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--bdr);margin:10px auto 0}
+.sheet-title{padding:12px 20px 10px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.sheet-close{border:none;background:none;cursor:pointer;font-size:22px;color:var(--tx3);line-height:1}
+.sheet-body{flex:1;overflow-y:auto;padding:0 20px 8px}
+.opt-row{padding:10px 0;font-size:14px;border-bottom:0.5px solid var(--bdr);display:flex;align-items:center;gap:8px;cursor:pointer;transition:background .1s}
+.opt-row:last-child{border-bottom:none}
+.opt-row.on{color:var(--pink-dk)}
+.opt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.opt-name{flex:1}
+.opt-chk{font-size:14px;color:var(--pink-d);min-width:18px;text-align:right}
+.opt-del{border:none;background:none;cursor:pointer;color:var(--tx3);font-size:18px;padding:0 2px;line-height:1}
+.opt-del:hover{color:#E24B4A}
+.add-opt{display:flex;gap:8px;padding:12px 0 4px;border-top:0.5px solid var(--bdr);margin-top:4px}
+.add-opt input{flex:1;border:none;background:none;font-size:14px;outline:none;color:var(--tx);font-family:inherit}
+.add-opt button{font-size:14px;color:var(--pink-d);border:none;background:none;cursor:pointer;font-weight:500;font-family:inherit}
 
-/* SWIPEABLE WHEEL TRACK */
-.wheel-track-wrap { width: min(260px, 68vw); overflow: hidden; flex-shrink: 0; position: relative; }
-.wheel-track { display: flex; transition: transform 0.3s cubic-bezier(.4,0,.2,1); will-change: transform; }
-.wheel-slide { flex-shrink: 0; width: min(260px, 68vw); display: flex; align-items: center; justify-content: center; }
-
-/* GEAR BUTTON on wheel */
-.wheel-gear-btn {
-  position: absolute; top: -4px; right: -4px;
-  width: 32px; height: 32px; border-radius: 50%;
-  background: var(--surface); border: 1px solid var(--border);
-  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
-  font-size: 16px; cursor: pointer; z-index: 5;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s;
-}
-.wheel-gear-btn:active { background: var(--pink-light); }
-
-/* SETTINGS MODAL */
-.settings-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 60; display: none; align-items: flex-end; }
-.settings-modal-overlay.open { display: flex; }
-.settings-modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-width: 430px; margin: 0 auto; padding: 20px 20px 32px; max-height: 75dvh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-.settings-modal-title { font-size: 15px; font-weight: 700; text-align: center; margin-bottom: 4px; }
-.settings-opt-row { padding: 8px 12px; font-size: 13px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 8px; background: var(--surface); }
-.settings-opt-name { flex: 1; }
-.settings-opt-del { border: none; background: none; cursor: pointer; color: var(--text-hint); font-size: 18px; padding: 0 2px; line-height: 1; }
-.settings-opt-del:hover { color: #E24B4A; }
-.settings-add-row { display: flex; gap: 8px; padding: 8px 12px; border: 0.5px dashed var(--border); border-radius: var(--radius-sm); }
-.settings-add-row input { flex: 1; border: none; background: none; font-size: 13px; outline: none; font-family: inherit; color: var(--text); }
-.settings-add-row button { font-size: 13px; color: var(--pink-deep); border: none; background: none; cursor: pointer; font-weight: 500; font-family: inherit; }
-.settings-del-cat-btn { padding: 10px; border: none; border-radius: var(--radius-sm); background: #FCEBEB; color: #E24B4A; font-size: 13px; cursor: pointer; font-family: inherit; text-align: center; }
-.settings-add-cat-row { display: flex; gap: 8px; padding: 8px 12px; border: 1px dashed var(--border); border-radius: var(--radius-sm); background: var(--bg); }
-.settings-add-cat-row input { flex: 1; border: none; background: none; font-size: 13px; outline: none; font-family: inherit; color: var(--text); }
-.settings-add-cat-row button { font-size: 13px; color: var(--pink-deep); border: none; background: none; cursor: pointer; font-weight: 500; font-family: inherit; }
+/* ADD CATEGORY SHEET */
+.cat-row{padding:10px 0;font-size:14px;border-bottom:0.5px solid var(--bdr);display:flex;align-items:center;gap:8px}
+.cat-row:last-child{border-bottom:none}
+.cat-drag{color:var(--tx3);font-size:16px;cursor:grab}
+.cat-name{flex:1}
+.cat-del{border:none;background:none;cursor:pointer;color:var(--tx3);font-size:18px;line-height:1}
+.cat-del:hover{color:#E24B4A}
 
 /* COOK TYPE */
-.cook-type-cards { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
-.cook-type-card { border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px; cursor: pointer; background: var(--surface); transition: all .2s; display: flex; align-items: center; gap: 14px; }
-.cook-type-card:active { transform: scale(.98); }
-.cook-type-ic { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
-.cook-type-t { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
-.cook-type-s { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+.ctype-cards{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.ctype{border:0.5px solid var(--bdr);border-radius:var(--r3);padding:18px 16px;cursor:pointer;background:var(--surf);display:flex;align-items:center;gap:14px;transition:all .2s}
+.ctype:active{transform:scale(.98)}
+.ctype-ic{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.ctype-t{font-size:15px;font-weight:700;margin-bottom:3px}
+.ctype-s{font-size:12px;color:var(--tx2);line-height:1.5}
 
 /* AI */
-.ai-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 20px; gap: 14px; }
-.ai-spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--pink); border-radius: 50%; animation: spin 1s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.score-block { background: var(--pink-light); border-radius: var(--radius); padding: 16px; display: flex; align-items: center; gap: 16px; }
-.score-num { font-size: 36px; font-weight: 700; color: var(--pink-dark); line-height: 1; }
-.score-label { font-size: 11px; color: var(--pink-deep); }
-.score-rows { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-.score-row { display: flex; gap: 6px; font-size: 12px; }
-.score-row-k { color: var(--text-hint); min-width: 32px; }
-.score-row-v { color: var(--text-sub); }
-.summary-box { background: var(--bg); border-radius: var(--radius); padding: 14px; font-size: 14px; line-height: 1.75; color: var(--text-sub); }
+.ai-spin{width:36px;height:36px;border:3px solid var(--bdr);border-top-color:var(--pink);border-radius:50%;animation:rot 1s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.score-blk{border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px}
+.score-n{font-size:36px;font-weight:700;line-height:1}
+.score-lbl{font-size:11px;margin-top:2px}
+.score-rows{flex:1}
+.score-row{display:flex;gap:6px;font-size:12px;margin-bottom:4px}
+.score-k{color:var(--tx3);min-width:32px}
+.score-v{color:var(--tx2)}
+.sumbox{background:var(--bg);border-radius:var(--r);padding:14px;font-size:14px;line-height:1.75;color:var(--tx2)}
 
 /* INGREDIENTS */
-.ing-dish { margin-bottom: 14px; }
-.ing-dish-name { font-size: 14px; font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-.ing-dish-name::before { content: ''; width: 3px; height: 14px; background: var(--pink); border-radius: 2px; display: block; }
-.ing-list-card { border: 0.5px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
-.ing-row { padding: 8px 12px; font-size: 13px; border-bottom: 0.5px solid var(--border); display: flex; justify-content: space-between; }
-.ing-row:last-child { border-bottom: none; }
-.ing-amt { color: var(--text-sub); font-size: 12px; }
+.ing-dish{margin-bottom:14px}
+.ing-name{font-size:14px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.ing-name::before{content:'';width:3px;height:14px;background:var(--pink);border-radius:2px;display:block}
+.ing-card{border:0.5px solid var(--bdr);border-radius:var(--r2);overflow:hidden}
+.ing-row{padding:8px 12px;font-size:13px;border-bottom:0.5px solid var(--bdr);display:flex;justify-content:space-between}
+.ing-row:last-child{border-bottom:none}
+.ing-amt{color:var(--tx2);font-size:12px}
 
 /* RECORD */
-.upload-area { border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; background: var(--bg); transition: all .15s; }
-.upload-area:hover { border-color: var(--pink); background: var(--pink-light); }
-.upload-icon { font-size: 28px; }
-.upload-text { font-size: 13px; color: var(--text-sub); }
-.preview-wrap { position: relative; border-radius: var(--radius); overflow: hidden; }
-.preview-wrap img { width: 100%; max-height: 200px; object-fit: cover; display: block; }
-.preview-rm { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,.45); color: white; border: none; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; }
-textarea.note-input { width: 100%; padding: 12px; border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 14px; font-family: inherit; resize: none; outline: none; background: var(--surface); color: var(--text); min-height: 80px; line-height: 1.6; }
-textarea.note-input:focus { border-color: var(--pink); }
+.upload-area{border:1.5px dashed var(--bdr);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:var(--bg)}
+.upload-area:hover{border-color:var(--pink);background:var(--pink-l)}
+.prev-wrap{position:relative;border-radius:var(--r);overflow:hidden}
+.prev-wrap img{width:100%;max-height:200px;object-fit:cover;display:block}
+.prev-rm{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;border:none;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+textarea.note{width:100%;padding:12px;border:0.5px solid var(--bdr);border-radius:var(--r);font-size:14px;font-family:inherit;resize:none;outline:none;background:var(--surf);color:var(--tx);min-height:80px;line-height:1.6}
+textarea.note:focus{border-color:var(--pink)}
 
-/* BTNS */
-.btn-p { background: var(--pink); color: var(--pink-dark); border: none; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; padding: 13px; font-family: inherit; transition: all .15s; }
-.btn-p:active { background: var(--pink-deep); color: white; transform: scale(.98); }
-.btn-s { background: none; border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 14px; cursor: pointer; padding: 13px; color: var(--text); font-family: inherit; transition: all .15s; }
-.btn-s:active { background: var(--bg); }
-.row-btns { display: flex; gap: 8px; }
-.row-btns .btn-p, .row-btns .btn-s { flex: 1; }
+/* BUTTONS */
+.btn-p{background:var(--pink);color:var(--pink-dk);border:none;border-radius:var(--r);font-size:14px;font-weight:700;cursor:pointer;padding:13px;font-family:inherit}
+.btn-p:active{background:var(--pink-d);color:#fff}
+.btn-s{background:none;border:0.5px solid var(--bdr);border-radius:var(--r);font-size:14px;cursor:pointer;padding:13px;color:var(--tx);font-family:inherit}
+.btn-s:active{background:var(--bg)}
+.row2{display:flex;gap:8px}
+.row2 .btn-p,.row2 .btn-s{flex:1}
+.section-lbl{font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:6px}
 
 /* LIGHTBOX */
-.lightbox { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
-.lightbox.open { display: flex; }
-.lightbox img { width: 100vw; height: 100dvh; object-fit: contain; display: block; }
-.lightbox-close { position: fixed; top: env(safe-area-inset-top, 16px); right: 16px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.18); color: white; border: none; cursor: pointer; font-size: 22px; display: flex; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
-.lightbox-info { position: fixed; bottom: 0; left: 0; right: 0; padding: 16px 20px calc(env(safe-area-inset-bottom, 0px) + 16px); background: linear-gradient(transparent, rgba(0,0,0,.6)); color: rgba(255,255,255,.7); font-size: 12px; text-align: center; }
+.lbox{position:fixed;inset:0;background:#000;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center}
+.lbox.on{display:flex}
+.lbox img{width:100vw;height:100dvh;object-fit:contain}
+.lbox-close{position:fixed;top:max(env(safe-area-inset-top,0px),14px);right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;z-index:10000}
+.lbox-hint{position:fixed;bottom:max(env(safe-area-inset-bottom,0px),14px);left:0;right:0;text-align:center;color:rgba(255,255,255,.5);font-size:12px}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50;display:none;align-items:flex-end}
+.modal-ov.on{display:flex}
+.modal-sheet{background:var(--surf);border-radius:20px 20px 0 0;width:100%;max-width:430px;margin:0 auto;padding:20px 20px 32px}
+.modal-t{font-size:15px;font-weight:700;margin-bottom:14px;text-align:center}
+.modal-opts{display:flex;flex-direction:column;gap:8px}
+.modal-opt{padding:13px 16px;border:0.5px solid var(--bdr);border-radius:var(--r);font-size:14px;cursor:pointer;font-family:inherit;background:var(--surf);color:var(--tx);display:flex;align-items:center;gap:10px}
+.modal-opt:active{background:var(--pink-l)}
+.modal-cancel{margin-top:8px;padding:13px;border:none;border-radius:var(--r);font-size:14px;cursor:pointer;font-family:inherit;background:var(--bg);color:var(--tx2);width:100%}
 
 /* TOAST */
-.toast { position: fixed; bottom: calc(var(--nav-h) + 12px); left: 50%; transform: translateX(-50%); background: #1A1A18; color: white; padding: 9px 18px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap; z-index: 100; }
-.toast.show { opacity: 1; }
+.toast{position:fixed;bottom:calc(var(--nav) + 12px);left:50%;transform:translateX(-50%);background:#1A1A18;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:300}
+.toast.on{opacity:1}
 
-/* MODAL for meal type select on calendar */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 50; display: none; align-items: flex-end; }
-.modal-overlay.open { display: flex; }
-.modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-width: 430px; margin: 0 auto; padding: 20px 20px 32px; }
-.modal-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; text-align: center; }
-.modal-opts { display: flex; flex-direction: column; gap: 8px; }
-.modal-opt { padding: 13px 16px; border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 14px; cursor: pointer; font-family: inherit; background: var(--surface); color: var(--text); transition: all .15s; display: flex; align-items: center; gap: 10px; }
-.modal-opt:active { background: var(--pink-light); }
-.modal-cancel { margin-top: 8px; padding: 13px; border: none; border-radius: var(--radius); font-size: 14px; cursor: pointer; font-family: inherit; background: var(--bg); color: var(--text-sub); width: 100%; }
+/* GEAR ICON */
+.gear-btn{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.85);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx2);backdrop-filter:blur(4px)}
+.gear-btn svg{width:15px;height:15px}
 
-.section-pad { padding: 0 20px; }
-.gap { height: 12px; }
-.gap-sm { height: 8px; }
-.section-label { font-size: 12px; font-weight: 500; color: var(--text-sub); margin-bottom: 6px; }
+.gap{height:12px}
+.gap-sm{height:8px}
+.pad{padding:0 20px}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- CALENDAR SCREEN -->
-  <div class="screen active" id="scr-calendar">
-    <div class="cal-wrap">
-      <div class="cal-header">
-        <span class="cal-month" id="cal-month-label"></span>
-        <div class="cal-nav-btns">
-          <button onclick="changeMonth(-1)">‹</button>
-          <button onclick="changeMonth(1)">›</button>
-        </div>
-      </div>
-      <div class="cal-grid" id="cal-grid">
-        <div class="cal-wd">日</div><div class="cal-wd">一</div><div class="cal-wd">二</div>
-        <div class="cal-wd">三</div><div class="cal-wd">四</div><div class="cal-wd">五</div><div class="cal-wd">六</div>
+  <!-- CALENDAR -->
+  <div class="scr on" id="scr-cal">
+    <div class="cal-hdr">
+      <span class="cal-mo" id="cal-mo"></span>
+      <div class="cal-nav">
+        <button onclick="chMo(-1)">‹</button>
+        <button onclick="chMo(1)">›</button>
       </div>
     </div>
-    <div class="day-records" id="day-records"></div>
+    <div class="cal-grid" id="cal-grid">
+      <div class="cwd">日</div><div class="cwd">一</div><div class="cwd">二</div>
+      <div class="cwd">三</div><div class="cwd">四</div><div class="cwd">五</div><div class="cwd">六</div>
+    </div>
+    <div class="drec" id="drec"></div>
   </div>
 
-  <!-- DECIDE SCREEN -->
-  <div class="screen" id="scr-decide">
-    <div class="decide-hero">
-      <div class="decide-date" id="decide-date"></div>
-      <div class="decide-title">今天吃什么？</div>
+  <!-- DECIDE -->
+  <div class="scr" id="scr-dec">
+    <div class="dec-hero">
+      <div class="dec-date" id="dec-date"></div>
+      <div class="dec-ttl">今天吃什么？</div>
     </div>
-    <div class="meal-tabs">
-      <div class="meal-tab active" onclick="selMeal('breakfast',this)"><span class="tab-em">🌅</span>早餐</div>
-      <div class="meal-tab" onclick="selMeal('lunch',this)"><span class="tab-em">☀️</span>午餐</div>
-      <div class="meal-tab" onclick="selMeal('dinner',this)"><span class="tab-em">🌙</span>晚餐</div>
+    <div class="mtabs">
+      <div class="mtab on" onclick="selMeal('breakfast',this)"><span class="em">🌅</span>早餐</div>
+      <div class="mtab" onclick="selMeal('lunch',this)"><span class="em">☀️</span>午餐</div>
+      <div class="mtab" onclick="selMeal('dinner',this)"><span class="em">🌙</span>晚餐</div>
     </div>
-    <div class="mode-list">
-      <div class="mode-card" id="mode-breakfast-only" onclick="startBreakfast()" style="display:none">
-        <div class="mode-ic" style="background:var(--peach-light)">🌸</div>
-        <div class="mode-txt"><div class="t">早餐转盘</div><div class="s">依次选主食和饮品</div></div>
-        <span class="mode-arr">›</span>
+    <div class="mcards" id="mode-cards">
+      <div class="mmode" id="mc-bk" onclick="startBk()" style="display:none">
+        <div class="mic" style="background:var(--peach-l)">🌸</div>
+        <div><div class="mt">早餐转盘</div><div class="ms">依次选主食和饮品等</div></div>
+        <span class="marr">›</span>
       </div>
-      <div class="mode-card" id="mode-delivery" onclick="startSpinner('delivery')">
-        <div class="mode-ic" style="background:var(--pink-light)">🛵</div>
-        <div class="mode-txt"><div class="t">叫外卖</div><div class="s">转盘决定，支持手动选</div></div>
-        <span class="mode-arr">›</span>
+      <div class="mmode" id="mc-del" onclick="startSp('delivery')">
+        <div class="mic" style="background:var(--pink-l)">🛵</div>
+        <div><div class="mt">叫外卖</div><div class="ms">转盘决定，支持手动选</div></div>
+        <span class="marr">›</span>
       </div>
-      <div class="mode-card" id="mode-dine" onclick="startSpinner('dine')">
-        <div class="mode-ic" style="background:var(--mint-light)">🍽️</div>
-        <div class="mode-txt"><div class="t">出去吃</div><div class="s">转盘决定，支持手动选</div></div>
-        <span class="mode-arr">›</span>
+      <div class="mmode" id="mc-dine" onclick="startSp('dine')">
+        <div class="mic" style="background:var(--mint-l)">🍽️</div>
+        <div><div class="mt">出去吃</div><div class="ms">转盘决定，支持手动选</div></div>
+        <span class="marr">›</span>
       </div>
-      <div class="mode-card" id="mode-cook" onclick="startCookType()">
-        <div class="mode-ic" style="background:var(--lavender-light)">👨‍🍳</div>
-        <div class="mode-txt"><div class="t">自己做饭</div><div class="s">AI 营养评估 + 食材清单</div></div>
-        <span class="mode-arr">›</span>
+      <div class="mmode" id="mc-cook" onclick="startCkType()">
+        <div class="mic" style="background:var(--lav-l)">👨‍🍳</div>
+        <div><div class="mt">自己做饭</div><div class="ms">AI 营养评估 + 食材清单</div></div>
+        <span class="marr">›</span>
       </div>
     </div>
   </div>
 
-  <!-- SUB: SPINNER -->
-  <div class="sub-screen" id="sub-spinner">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goBack('spinner')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        返回
+  <!-- SUB: SINGLE SPINNER (外卖/出去吃) -->
+  <div class="sub" id="sub-sp">
+    <div class="topbar">
+      <button class="back" onclick="goBack('sp')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>返回
       </button>
+      <span style="font-size:16px;font-weight:700;flex:1" id="sp-title"></span>
     </div>
-    <div class="spinner-wrap" style="padding-top:8px">
-      <div class="sp-title" id="sp-title"></div>
-      <div class="sp-sub" id="sp-sub">转盘决定，或点选手动选</div>
-      <div class="wheel-outer">
-        <canvas class="wheel-canvas" id="main-canvas" width="520" height="520" style="cursor:pointer"></canvas>
+    <div class="sp-wrap" style="padding-top:12px">
+      <div class="spin-result" id="sp-result-box">
+        <div class="spin-main" id="sp-main"></div>
+        <div class="spin-hint" id="sp-hint">转动转盘，或在下方手动选</div>
+      </div>
+      <div class="wheel-outer" id="sp-wheel-outer">
+        <canvas id="sp-canvas"></canvas>
         <div class="wheel-ptr"></div>
-        <div class="wheel-hub"></div>
-        <button class="wheel-gear-btn" onclick="openSettingsModal('spinner')" title="设置选项" style="position:absolute;top:-4px;right:-4px;width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);box-shadow:0 1px 6px rgba(0,0,0,.12);font-size:16px;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center">⚙</button>
+        <div class="wheel-hub" id="sp-hub"></div>
+        <button class="gear-btn" onclick="openSheet('sp')" title="管理选项">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </button>
       </div>
-      <div class="spin-result-box">
-        <div class="spin-result-main" id="sp-result-main"></div>
-        <div class="spin-result-hint" id="sp-result-hint"></div>
+      <button class="spin-btn" onclick="doSpinSp()">✦ 转！</button>
+      <div style="width:100%;display:none" id="sp-rec-btn">
+        <button class="btn-p" style="width:100%" onclick="goRec()">记录这餐 →</button>
       </div>
-      <button class="spin-btn" onclick="doSpin('main')">✦ 转！</button>
-      <div class="opts-panel">
-        <div class="opts-header"><span>转盘选项</span><span style="font-size:11px;color:var(--text-hint)">点击手动选 · 右侧删除</span></div>
-        <div class="opts-list" id="sp-opts-list"></div>
-        <div class="add-opt"><input placeholder="添加选项…" id="sp-add-input" onkeypress="if(event.key==='Enter')spAddOpt()"><button onclick="spAddOpt()">添加</button></div>
-      </div>
-      <div id="sp-record-btn" style="width:100%;display:none">
-        <button class="btn-p" style="width:100%" onclick="goRecord()">记录这餐 →</button>
-      </div>
-      <div style="height:16px"></div>
     </div>
   </div>
 
-  <!-- SUB: BREAKFAST FLOW -->
-  <div class="sub-screen" id="sub-breakfast">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goBack('breakfast')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        返回
+  <!-- SUB: MULTI SPINNER (早餐/做饭/轻食) -->
+  <div class="sub" id="sub-multi">
+    <div class="topbar">
+      <button class="back" onclick="goBack('multi')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>返回
       </button>
+      <span style="font-size:16px;font-weight:700;flex:1" id="multi-title"></span>
     </div>
-    <div class="spinner-wrap" style="padding-top:8px">
-      <div style="width:100%">
-        <div class="step-dots" id="bk-step-dots"></div>
-        <div style="font-size:12px;color:var(--text-sub);margin-top:6px" id="bk-step-label"></div>
-        <div style="font-size:18px;font-weight:700;margin-top:2px" id="bk-step-title"></div>
+    <div class="sp-wrap" style="padding-top:8px">
+      <!-- step tabs -->
+      <div class="slide-tabs" id="multi-tabs"></div>
+      <!-- wheel -->
+      <div class="wheel-outer" id="multi-wheel-outer">
+        <canvas id="multi-canvas"></canvas>
+        <div class="wheel-ptr"></div>
+        <div class="wheel-hub" id="multi-hub"></div>
+        <button class="gear-btn" onclick="openSheet('multi')" title="管理选项">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </button>
       </div>
-      <!-- swipeable multi-wheel track -->
-      <div class="wheel-track-wrap" id="bk-track-wrap">
-        <div class="wheel-track" id="bk-wheel-track"></div>
+      <div class="spin-result">
+        <div class="spin-main" id="multi-main"></div>
       </div>
-      <div class="spin-result-box">
-        <div class="spin-result-main" id="bk-result-main"></div>
+      <button class="spin-btn" onclick="doSpinMulti()">✦ 转！</button>
+      <div class="tags" id="multi-tags"></div>
+      <div class="row2" style="width:100%">
+        <button class="btn-s" id="multi-again" onclick="doSpinMulti()"></button>
+        <button class="btn-p" id="multi-next" onclick="multiNext()">就这样 →</button>
       </div>
-      <button class="spin-btn" onclick="doSpin('bk')">✦ 转！</button>
-      <div style="width:100%">
-        <div style="font-size:11px;color:var(--text-hint);margin-bottom:4px">已选（点 × 取消）</div>
-        <div class="tags-wrap" id="bk-selected"></div>
-      </div>
-      <div class="row-btns" style="width:100%">
-        <button class="btn-s" id="bk-again-btn" onclick="doSpin('bk')">再转一次</button>
-        <button class="btn-p" id="bk-next-btn" onclick="bkNext()">就这样 →</button>
-      </div>
-      <div style="height:16px"></div>
     </div>
   </div>
 
-  <!-- SUB: COOK TYPE SELECT -->
-  <div class="sub-screen" id="sub-cook-type">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goBack('cook-type')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        返回
-      </button>
+  <!-- SUB: COOK TYPE -->
+  <div class="sub" id="sub-ckt">
+    <div class="topbar">
+      <button class="back" onclick="goBack('ckt')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>返回</button>
     </div>
     <div style="padding:8px 20px 0;font-size:18px;font-weight:700">选择烹饪方式</div>
-    <div class="cook-type-cards">
-      <div class="cook-type-card" onclick="startCook('full')">
-        <div class="cook-type-ic" style="background:var(--lavender-light)">🍳</div>
-        <div>
-          <div class="cook-type-t">正式烹饪</div>
-          <div class="cook-type-s">依次选荤菜、素菜、汤、主食等<br>AI 评估营养 + 食材清单</div>
-        </div>
+    <div class="ctype-cards">
+      <div class="ctype" onclick="startMulti('cook')">
+        <div class="ctype-ic" style="background:var(--lav-l)">🍳</div>
+        <div><div class="ctype-t">正式烹饪</div><div class="ctype-s">依次选荤菜、素菜、汤等<br>AI 评估营养 + 食材清单</div></div>
       </div>
-      <div class="cook-type-card" onclick="startCook('light')">
-        <div class="cook-type-ic" style="background:var(--mint-light)">🥗</div>
-        <div>
-          <div class="cook-type-t">轻食</div>
-          <div class="cook-type-s">从蛋白质、碳水、膳食纤维等维度搭配<br>低卡健康风</div>
-        </div>
+      <div class="ctype" onclick="startMulti('light')">
+        <div class="ctype-ic" style="background:var(--mint-l)">🥗</div>
+        <div><div class="ctype-t">轻食</div><div class="ctype-s">从蛋白质、碳水等维度搭配<br>低卡健康风</div></div>
       </div>
     </div>
   </div>
 
-  <!-- SUB: COOK FLOW -->
-  <div class="sub-screen" id="sub-cook">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goBack('cook')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        返回
-      </button>
+  <!-- SUB: AI -->
+  <div class="sub" id="sub-ai">
+    <div class="topbar">
+      <button class="back" onclick="goBack('ai')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>重新选</button>
     </div>
-    <div class="spinner-wrap" style="padding-top:8px">
-      <div style="width:100%">
-        <div class="step-dots" id="ck-step-dots"></div>
-        <div style="font-size:12px;color:var(--text-sub);margin-top:6px" id="ck-step-label"></div>
-        <div style="font-size:18px;font-weight:700;margin-top:2px" id="ck-step-title"></div>
-      </div>
-      <!-- swipeable multi-wheel track -->
-      <div class="wheel-track-wrap" id="ck-track-wrap">
-        <div class="wheel-track" id="ck-wheel-track"></div>
-      </div>
-      <div class="spin-result-box">
-        <div class="spin-result-main" id="ck-result-main"></div>
-      </div>
-      <button class="spin-btn" onclick="doSpin('ck')">✦ 转！</button>
-      <div style="width:100%">
-        <div style="font-size:11px;color:var(--text-hint);margin-bottom:4px">已选（点 × 取消）</div>
-        <div class="tags-wrap" id="ck-selected"></div>
-      </div>
-      <div class="row-btns" style="width:100%">
-        <button class="btn-s" id="ck-again-btn" onclick="doSpin('ck')">再转一次</button>
-        <button class="btn-p" id="ck-next-btn" onclick="ckNext()">就这样 →</button>
-      </div>
-      <div style="height:16px"></div>
-    </div>
-  </div>
-
-  <!-- SUB: LIGHT FOOD (spinner flow) -->
-  <div class="sub-screen" id="sub-light">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goBack('light')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        返回
-      </button>
-    </div>
-    <div class="spinner-wrap" style="padding-top:8px">
-      <div style="width:100%">
-        <div class="step-dots" id="lt-step-dots"></div>
-        <div style="font-size:12px;color:var(--text-sub);margin-top:6px" id="lt-step-label"></div>
-        <div style="font-size:18px;font-weight:700;margin-top:2px" id="lt-step-title"></div>
-      </div>
-      <!-- swipeable multi-wheel track -->
-      <div class="wheel-track-wrap" id="lt-track-wrap">
-        <div class="wheel-track" id="lt-wheel-track"></div>
-      </div>
-      <div class="spin-result-box">
-        <div class="spin-result-main" id="lt-result-main"></div>
-      </div>
-      <button class="spin-btn" onclick="doSpin('lt')">✦ 转！</button>
-      <div style="width:100%">
-        <div style="font-size:11px;color:var(--text-hint);margin-bottom:4px">已选（点 × 取消）</div>
-        <div class="tags-wrap" id="lt-selected"></div>
-      </div>
-      <div class="row-btns" style="width:100%">
-        <button class="btn-s" id="lt-again-btn" onclick="doSpin('lt')">再转一次</button>
-        <button class="btn-p" id="lt-next-btn" onclick="ltNext()">就这样 →</button>
-      </div>
-      <div style="height:16px"></div>
-    </div>
-  </div>
-
-  <!-- SUB: AI ASSESSMENT -->
-  <div class="sub-screen" id="sub-ai">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goBack('ai')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        重新选
-      </button>
-    </div>
-    <div style="padding:8px 20px 20px;flex:1;display:flex;flex-direction:column;gap:14px">
+    <div class="pad" style="padding-bottom:20px;flex:1;display:flex;flex-direction:column;gap:14px">
       <div style="font-size:18px;font-weight:700">AI 营养评估</div>
-      <div id="ai-loading" class="ai-loading">
-        <div class="ai-spinner"></div>
-        <div style="font-size:13px;color:var(--text-sub)">DeepSeek 分析中…</div>
+      <div id="ai-load" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 0;gap:14px">
+        <div class="ai-spin"></div>
+        <div style="font-size:13px;color:var(--tx2)">DeepSeek 分析中…</div>
       </div>
-      <div id="ai-result" style="display:none;flex-direction:column;gap:12px">
-        <div class="score-block" id="ai-score-block"></div>
-        <div>
-          <div class="section-label">今日菜单</div>
-          <div id="ai-menu-list" style="font-size:13px;line-height:1.8;color:var(--text-sub)"></div>
-        </div>
-        <div class="summary-box" id="ai-summary"></div>
-        <div class="row-btns" style="margin-top:auto">
+      <div id="ai-res" style="display:none;flex-direction:column;gap:12px">
+        <div class="score-blk" id="ai-score"></div>
+        <div><div class="section-lbl">今日菜单</div><div id="ai-menu" style="font-size:13px;line-height:1.9;color:var(--tx2)"></div></div>
+        <div class="sumbox" id="ai-sum"></div>
+        <div class="row2" style="margin-top:auto">
           <button class="btn-s" onclick="goBack('ai')">重新选择</button>
-          <button class="btn-p" onclick="goIngredients()">去做饭 →</button>
+          <button class="btn-p" onclick="goIng()">去做饭 →</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- SUB: INGREDIENTS -->
-  <div class="sub-screen" id="sub-ingredients">
-    <div class="top-bar">
-      <button class="back-btn" onclick="showSub('ai')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        返回
-      </button>
+  <div class="sub" id="sub-ing">
+    <div class="topbar">
+      <button class="back" onclick="showSub('ai')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>返回</button>
     </div>
-    <div style="padding:8px 20px 20px;flex:1;display:flex;flex-direction:column;gap:0">
+    <div class="pad" style="padding-bottom:20px;flex:1;display:flex;flex-direction:column">
       <div style="font-size:18px;font-weight:700;margin-bottom:3px">食材清单</div>
-      <div style="font-size:12px;color:var(--text-sub);margin-bottom:16px">2–3 人份所需食材</div>
-      <div id="ing-loading" class="ai-loading" style="display:none">
-        <div class="ai-spinner"></div>
-        <div style="font-size:13px;color:var(--text-sub)">生成食材中…</div>
+      <div style="font-size:12px;color:var(--tx2);margin-bottom:16px">2–3 人份所需食材</div>
+      <div id="ing-load" style="display:none;flex-direction:column;align-items:center;padding:32px 0;gap:12px">
+        <div class="ai-spin"></div><div style="font-size:13px;color:var(--tx2)">生成中…</div>
       </div>
       <div id="ing-content" style="flex:1"></div>
-      <button class="btn-p" style="margin-top:16px" onclick="goRecord()">做好了，记录这餐 →</button>
+      <button class="btn-p" style="margin-top:16px" onclick="goRec()">做好了，记录这餐 →</button>
     </div>
   </div>
 
   <!-- SUB: RECORD -->
-  <div class="sub-screen" id="sub-record">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goBack('record')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        返回
-      </button>
+  <div class="sub" id="sub-rec">
+    <div class="topbar">
+      <button class="back" onclick="goBack('rec')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>返回</button>
     </div>
-    <div style="padding:8px 20px 20px;flex:1;display:flex;flex-direction:column;gap:12px">
+    <div class="pad" style="padding-bottom:20px;flex:1;display:flex;flex-direction:column;gap:12px">
       <div>
-        <div style="font-size:18px;font-weight:700;margin-bottom:3px" id="rec-title">记录这餐</div>
-        <div style="font-size:12px;color:var(--text-sub)" id="rec-sub"></div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:3px" id="rec-ttl">记录这餐</div>
+        <div style="font-size:12px;color:var(--tx2)" id="rec-sub"></div>
       </div>
-      <div id="rec-upload-area">
-        <div class="upload-area" onclick="document.getElementById('photo-input').click()">
-          <div class="upload-icon">📷</div>
-          <div class="upload-text">上传照片（可选）</div>
-          <div style="font-size:11px;color:var(--text-hint)">点击选择</div>
+      <div id="rec-upload">
+        <div class="upload-area" onclick="document.getElementById('photo-inp').click()">
+          <div style="font-size:28px">📷</div>
+          <div style="font-size:13px;color:var(--tx2)">上传照片（可选）</div>
         </div>
-        <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+        <input type="file" id="photo-inp" accept="image/*" style="display:none" onchange="handlePhoto(event)">
       </div>
-      <div class="preview-wrap" id="rec-preview" style="display:none">
-        <img id="rec-preview-img" src="">
-        <button class="preview-rm" onclick="removePhoto()">✕</button>
+      <div class="prev-wrap" id="rec-prev" style="display:none">
+        <img id="prev-img" src="">
+        <button class="prev-rm" onclick="rmPhoto()">✕</button>
       </div>
-      <textarea class="note-input" id="rec-note" placeholder="今天吃了什么？可以直接填文字…" rows="3"></textarea>
-      <button class="btn-p" style="margin-top:auto" id="rec-save-btn" onclick="saveRecord()">保存记录 ✓</button>
+      <textarea class="note" id="rec-note" placeholder="今天吃了什么？可直接填文字…" rows="3"></textarea>
+      <button class="btn-p" style="margin-top:auto" onclick="saveRec()">保存记录 ✓</button>
     </div>
   </div>
 
   <!-- NAV -->
   <nav class="nav">
-    <div id="sync-indicator" style="position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text-hint);z-index:5"></div>
-    <button class="nav-btn active" id="nav-cal" onclick="showScreen('calendar')">
+    <button class="nb on" id="nb-cal" onclick="showScr('cal')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      日历
-      <div class="nav-dot"></div>
+      日历<div class="ndot"></div>
     </button>
-    <button class="nav-btn" id="nav-decide" onclick="showScreen('decide')">
+    <button class="nb" id="nb-dec" onclick="showScr('dec')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
-      吃啥
-      <div class="nav-dot"></div>
+      吃啥<div class="ndot"></div>
     </button>
   </nav>
 </div>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <img id="lightbox-img" src="" onclick="closeLightbox()">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <div class="lightbox-info">点击图片关闭</div>
+<!-- OPTIONS SHEET -->
+<div class="sheet-overlay" id="sheet-ov" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">
+      <span id="sheet-ttl">选项管理</span>
+      <button class="sheet-close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="sheet-body">
+      <div id="sheet-list"></div>
+      <div class="add-opt">
+        <input placeholder="添加新选项…" id="sheet-inp" onkeypress="if(event.key==='Enter')sheetAdd()">
+        <button onclick="sheetAdd()">添加</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL: calendar add record -->
-<div class="modal-overlay" id="meal-modal" onclick="if(event.target===this)closeMealModal()">
+<!-- CATS SHEET (manage categories) -->
+<div class="sheet-overlay" id="cats-ov" onclick="if(event.target===this)closeCatsSheet()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">
+      <span id="cats-sheet-ttl">管理转盘分类</span>
+      <button class="sheet-close" onclick="closeCatsSheet()">×</button>
+    </div>
+    <div class="sheet-body">
+      <div id="cats-list"></div>
+      <div class="add-opt">
+        <input placeholder="添加新分类…" id="cats-inp" onkeypress="if(event.key==='Enter')catsAdd()">
+        <button onclick="catsAdd()">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MEAL MODAL (calendar add) -->
+<div class="modal-ov" id="meal-ov" onclick="if(event.target===this)closeMealMo()">
   <div class="modal-sheet">
-    <div class="modal-title" id="modal-title">选择餐次</div>
-    <div class="modal-opts" id="modal-opts"></div>
-    <button class="modal-cancel" onclick="closeMealModal()">取消</button>
+    <div class="modal-t" id="meal-mo-t">选择餐次</div>
+    <div class="modal-opts" id="meal-mo-opts"></div>
+    <button class="modal-cancel" onclick="closeMealMo()">取消</button>
   </div>
 </div>
 
-<!-- SETTINGS MODAL for wheel options -->
-<div class="settings-modal-overlay" id="settings-modal" onclick="if(event.target===this)closeSettingsModal()">
-  <div class="settings-modal-sheet">
-    <div class="settings-modal-title" id="settings-modal-title">设置选项</div>
-    <div id="settings-modal-body"></div>
-    <button class="modal-cancel" onclick="closeSettingsModal()" style="margin-top:8px">完成</button>
-  </div>
+<!-- LIGHTBOX -->
+<div class="lbox" id="lbox">
+  <img id="lbox-img" src="" onclick="closeLbox()">
+  <button class="lbox-close" onclick="closeLbox()">✕</button>
+  <div class="lbox-hint">点击图片关闭</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK for cloud sync -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <script>
-// ===== Firebase Cloud Sync =====
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyC0Hs46U8Rsqiw0RvR2_0lUf4R4h1D6gkM",
-  authDomain: "what-to-eat-6a933.firebaseapp.com",
-  databaseURL: "https://what-to-eat-6a933-default-rtdb.firebaseio.com",
-  projectId: "what-to-eat-6a933",
-  storageBucket: "what-to-eat-6a933.firebasestorage.app",
-  messagingSenderId: "619473359229",
-  appId: "1:619473359229:web:653d537d9539147f83a126"
-};
+const DSKEY='sk-3745741b78424612b2d7c525209331d3';
+const MC=['#F4A7C3','#A8D5BA','#B5C8F0','#F7C99A','#C5B4E3','#F0D5A0','#AADDE8','#F4B8B8','#B8E0C5','#D4B8E0'];
+const MCD=['#72243E','#27500A','#0C447C','#633806','#3C3489','#412402','#042C53','#501313','#085041','#26215C'];
 
-let db = null;
-let uid = localStorage.getItem("meal_uid") || "u_" + Math.random().toString(36).substr(2, 9);
-localStorage.setItem("meal_uid", uid);
-let syncStatus = "offline"; // offline | syncing | synced | error
-let syncTimer = null;
-
-function initFirebase() {
-  try {
-    if (FIREBASE_CONFIG.apiKey === "YOUR_API_KEY") {
-      console.log("Firebase not configured yet");
-      return;
-    }
-    firebase.initializeApp(FIREBASE_CONFIG);
-    db = firebase.database();
-    console.log("Firebase initialized for user:", uid);
-    pullFromCloud();
-  } catch(e) {
-    console.error("Firebase init error:", e);
-  }
-}
-
-function pushToCloud() {
-  if (!db) return;
-  // Short debounce: 500ms
-  if (syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => {
-    syncStatus = "syncing";
-    updateSyncUI();
-    try {
-      db.ref("users/" + uid).set({
-        records: S.records,
-        opts: S.opts,
-        updatedAt: firebase.database.ServerValue.TIMESTAMP
-      }).then(() => {
-        syncStatus = "synced";
-        updateSyncUI();
-        setTimeout(() => { if(syncStatus==="synced"){syncStatus="idle";updateSyncUI();} }, 5000);
-      }).catch(e => {
-        syncStatus = "error";
-        updateSyncUI();
-        console.error("Push error:", e);
-      });
-    } catch(e) {
-      syncStatus = "error";
-      updateSyncUI();
-    }
-  }, 500);
-}
-
-// Force sync on page unload (tab close / refresh)
-window.addEventListener('beforeunload', () => {
-  if (db && syncStatus !== 'syncing') {
-    try {
-      db.ref("users/" + uid).set({
-        records: S.records,
-        opts: S.opts,
-        updatedAt: firebase.database.ServerValue.TIMESTAMP
-      });
-    } catch(e) {}
-  }
-});
-
-function pullFromCloud() {
-  if (!db) return;
-  syncStatus = "syncing";
-  updateSyncUI();
-  db.ref("users/" + uid).once("value").then(snapshot => {
-    const data = snapshot.val();
-    if (data && data.records) {
-      // Merge: cloud data takes priority for records not in local
-      S.records = { ...S.records, ...data.records };
-      if (data.opts) {
-        S.opts = deepMergeOpts(DEFAULT_OPTS, data.opts);
-      }
-      saveState();
-      syncStatus = "synced";
-      renderCal();
-    } else {
-      syncStatus = "synced";
-    }
-    updateSyncUI();
-  }).catch(e => {
-    syncStatus = "error";
-    updateSyncUI();
-  });
-}
-
-function updateSyncUI() {
-  const el = document.getElementById("sync-indicator");
-  if (!el) return;
-  const icons = { offline: "☁️ 未配置", syncing: "🔄 同步中...", synced: "✅ 已同步", error: "❌ 同步失败", idle: "" };
-  el.textContent = icons[syncStatus] || "";
-}
-
-
-const DSKEY = 'sk-3745741b78424612b2d7c525209331d3';
-
-const MC = ['#F4A7C3','#A8D5BA','#B5C8F0','#F7C99A','#C5B4E3','#F0D5A0','#AADDE8','#F4B8B8','#B8E0C5','#D4B8E0'];
-const MCD = ['#72243E','#27500A','#0C447C','#633806','#3C3489','#412402','#042C53','#501313','#085041','#26215C'];
-
-const DEFAULT_OPTS = {
-  delivery: ['沙县小吃','黄焖鸡米饭','兰州拉面','螺蛳粉','麻辣烫','日式拉面','盖浇饭','麦当劳','肯德基'],
-  dine: ['火锅','烤肉','日料','川菜','粤菜','西餐','泰国菜','烤鱼'],
-  bkCats: ['主食','饮品'],
-  bkOpts: { '主食':['粥','馒头','全麦面包','包子','油条','三明治','吐司'], '饮品':['牛奶','豆浆','果汁','咖啡','无糖绿茶','豆腐脑'] },
-  cookCats: ['荤菜','素菜','汤','主食'],
-  cookOpts: { '荤菜':['红烧肉','宫保鸡丁','糖醋排骨','清蒸鱼','回锅肉','牛肉炒西兰花'], '素菜':['炒时蔬','蒜蓉菠菜','番茄炒蛋','麻婆豆腐','炒蘑菇','凉拌黄瓜'], '汤':['西红柿蛋花汤','排骨汤','紫菜蛋花汤','冬瓜汤','莲藕猪骨汤'], '主食':['白米饭','炒饭','面条','馒头','饺子'] },
-  lightCats: {
-    '蛋白质': ['鸡胸肉','水煮蛋','三文鱼','豆腐','希腊酸奶','金枪鱼','虾仁'],
-    '碳水': ['糙米饭','红薯','燕麦','全麦面包','藜麦','玉米'],
-    '健康脂肪': ['牛油果','坚果','橄榄油','奇亚籽'],
-    '膳食纤维': ['西兰花','生菜','黄瓜','番茄','菠菜','芹菜','彩椒']
+// ─── DEFAULT DATA ───────────────────────────────────────────────────────────
+const DEF={
+  spOpts:{
+    delivery:['沙县小吃','黄焖鸡米饭','兰州拉面','螺蛳粉','麻辣烫','日式拉面','盖浇饭','麦当劳','肯德基'],
+    dine:['火锅','烤肉','日料','川菜','粤菜','西餐','泰国菜','烤鱼']
+  },
+  multiCats:{
+    breakfast:['主食','饮品'],
+    cook:['荤菜','素菜','汤','主食'],
+    light:['蛋白质','碳水','健康脂肪','膳食纤维']
+  },
+  multiOpts:{
+    breakfast:{'主食':['粥','馒头','全麦面包','包子','油条','三明治','吐司'],'饮品':['牛奶','豆浆','果汁','咖啡','无糖绿茶','豆腐脑']},
+    cook:{'荤菜':['红烧肉','宫保鸡丁','糖醋排骨','清蒸鱼','回锅肉','牛肉炒西兰花'],'素菜':['炒时蔬','蒜蓉菠菜','番茄炒蛋','麻婆豆腐','炒蘑菇','凉拌黄瓜'],'汤':['西红柿蛋花汤','排骨汤','紫菜蛋花汤','冬瓜汤','莲藕猪骨汤'],'主食':['白米饭','炒饭','面条','馒头','饺子']},
+    light:{'蛋白质':['鸡胸肉','水煮蛋','三文鱼','豆腐','希腊酸奶','虾仁'],'碳水':['糙米饭','红薯','燕麦','全麦面包','藜麦','玉米'],'健康脂肪':['牛油果','坚果','橄榄油','奇亚籽'],'膳食纤维':['西兰花','生菜','黄瓜','番茄','菠菜','芹菜','彩椒']}
   }
 };
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem('mealapp_v3');
-    if (!raw) return null;
+// ─── STATE ──────────────────────────────────────────────────────────────────
+function loadS(){
+  try{
+    const raw=localStorage.getItem('mealapp_v4');
+    if(!raw)return null;
     return JSON.parse(raw);
-  } catch(e) { return null; }
+  }catch(e){return null}
 }
-function saveState() {
-  pushToCloud();
-  try {
-    // Deep clone to ensure nested objects are fully serialized
-    const data = JSON.parse(JSON.stringify({ records: S.records, opts: S.opts }));
-    localStorage.setItem('mealapp_v3', JSON.stringify(data));
-  } catch(e) { console.warn('saveState failed', e); }
+function saveS(){
+  try{
+    localStorage.setItem('mealapp_v4',JSON.stringify({records:S.records,spOpts:S.spOpts,multiCats:S.multiCats,multiOpts:S.multiOpts}));
+  }catch(e){}
 }
 
-let saved = loadState();
+const saved=loadS();
+const S={
+  calY:new Date().getFullYear(),calM:new Date().getMonth(),
+  selDate:null,
+  mealTime:'breakfast',
+  mode:null,         // 'delivery'|'dine'|'breakfast'|'cook'|'light'|'direct'
+  spMode:null,       // key for single spinner
+  multiMode:null,    // 'breakfast'|'cook'|'light'
+  multiStep:0,
+  multiSel:{},       // {cat:[...items]}
+  spResult:null,
+  photoData:null,
+  editKey:null,
+  aiResult:null,
+  // Persisted
+  records: saved?saved.records:{},
+  spOpts: saved&&saved.spOpts?deepMerge(DEF.spOpts,saved.spOpts):JSON.parse(JSON.stringify(DEF.spOpts)),
+  multiCats: saved&&saved.multiCats?deepMerge(DEF.multiCats,saved.multiCats):JSON.parse(JSON.stringify(DEF.multiCats)),
+  multiOpts: saved&&saved.multiOpts?deepMerge(DEF.multiOpts,saved.multiOpts):JSON.parse(JSON.stringify(DEF.multiOpts)),
+};
 
-// Deep merge: use saved value for all fields, fall back to defaults only if missing
-function deepMergeOpts(defaults, saved) {
-  if (!saved) return JSON.parse(JSON.stringify(defaults));
-  const result = JSON.parse(JSON.stringify(defaults));
-  // Overwrite top-level arrays/objects with saved versions where they exist
-  for (const k of Object.keys(saved)) {
-    if (k in result) {
-      if (Array.isArray(saved[k])) {
-        result[k] = saved[k];
-      } else if (typeof saved[k] === 'object' && saved[k] !== null) {
-        // Merge object: keep defaults for missing keys, use saved for existing
-        for (const sk of Object.keys(saved[k])) {
-          result[k][sk] = saved[k][sk];
-        }
-      } else {
-        result[k] = saved[k];
-      }
+function deepMerge(def,sv){
+  if(Array.isArray(sv))return JSON.parse(JSON.stringify(sv));
+  if(typeof sv!=='object'||sv===null)return sv;
+  const out=JSON.parse(JSON.stringify(def||{}));
+  for(const k in sv){
+    if(sv[k]!==null&&typeof sv[k]==='object'&&!Array.isArray(sv[k])){
+      out[k]=deepMerge(out[k]||{},sv[k]);
+    }else{
+      out[k]=JSON.parse(JSON.stringify(sv[k]));
     }
   }
-  return result;
+  return out;
 }
 
-let S = {
-  calYear: new Date().getFullYear(),
-  calMonth: new Date().getMonth(),
-  selDate: null,
-  mealTime: 'breakfast',
-  mode: null,
-  spinResult: null,
-  spOptKey: null,
-  bkStep: 0, bkSel: {},
-  ckStep: 0, ckSel: {},
-  ltStep: 0, lightSel: {},
-  aiResult: null,
-  photoData: null,
-  editKey: null,
-  editMeal: null,
-  records: saved ? (saved.records || {}) : {},
-  opts: deepMergeOpts(DEFAULT_OPTS, saved ? saved.opts : null)
-};
-// Ensure nested defaults exist
-if (!S.opts.bkCats || !S.opts.bkCats.length) S.opts.bkCats = [...DEFAULT_OPTS.bkCats];
-if (!S.opts.bkOpts) S.opts.bkOpts = JSON.parse(JSON.stringify(DEFAULT_OPTS.bkOpts));
-if (!S.opts.cookCats || !S.opts.cookCats.length) S.opts.cookCats = [...DEFAULT_OPTS.cookCats];
-if (!S.opts.cookOpts) S.opts.cookOpts = JSON.parse(JSON.stringify(DEFAULT_OPTS.cookOpts));
-if (!S.opts.lightCats || !Object.keys(S.opts.lightCats).length) S.opts.lightCats = JSON.parse(JSON.stringify(DEFAULT_OPTS.lightCats));
-
-// Screen management
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('scr-' + name).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('nav-' + (name === 'calendar' ? 'cal' : 'decide')).classList.add('active');
-  if (name === 'calendar') renderCal();
-  if (name === 'decide') {
-    const h = new Date().getHours();
-    document.getElementById('decide-date').textContent = new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric'}) + ' · ' + (h<10?'早上好':h<14?'中午好':h<18?'下午好':'晚上好');
-    updateModeCards();
+// ─── SCREEN / SUB MANAGEMENT ────────────────────────────────────────────────
+function showScr(name){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.sub').forEach(s=>s.classList.remove('on'));
+  document.getElementById('scr-'+name).classList.add('on');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('nb-'+(name==='cal'?'cal':'dec')).classList.add('on');
+  if(name==='cal')renderCal();
+  if(name==='dec'){
+    const h=new Date().getHours();
+    document.getElementById('dec-date').textContent=new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric'})+' · '+(h<10?'早上好':h<14?'中午好':h<18?'下午好':'晚上好');
+    updModeCards();
   }
 }
-
-function showSub(name) {
-  document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById('sub-' + name);
-  if (el) { el.classList.add('active'); el.scrollTop = 0; }
+function showSub(name){
+  document.querySelectorAll('.sub').forEach(s=>s.classList.remove('on'));
+  const el=document.getElementById('sub-'+name);
+  if(el){el.classList.add('on');el.scrollTop=0;}
+}
+function goBack(from){
+  const mp={sp:'dec',multi:'dec',ckt:'dec',ai:S.mode==='light'?'multi':'multi',rec:'dec'};
+  const dst=mp[from];
+  if(dst==='dec')showScr('dec'); else showSub(dst);
 }
 
-function goBack(from) {
-  const map = { spinner: 'decide', breakfast: 'decide', 'cook-type': 'decide', cook: 'cook-type', light: 'cook-type', lt: 'cook-type', ai: S.mode === 'light' ? 'light' : 'cook', record: 'decide' };
-  const dest = map[from];
-  if (!dest) { showScreen('decide'); return; }
-  if (dest === 'decide') { showScreen('decide'); }
-  else { showSub(dest); }
-}
+// ─── CALENDAR ───────────────────────────────────────────────────────────────
+let calY=new Date().getFullYear(),calM=new Date().getMonth();
+function chMo(d){calM+=d;if(calM>11){calM=0;calY++;}else if(calM<0){calM=11;calY--;}renderCal();}
 
-// Calendar
-let calY = new Date().getFullYear(), calM = new Date().getMonth();
-function changeMonth(d) { calM += d; if(calM>11){calM=0;calY++;}else if(calM<0){calM=11;calY--;} renderCal(); }
-
-function renderCal() {
-  const months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-  document.getElementById('cal-month-label').textContent = calY + '年 ' + months[calM];
-  const grid = document.getElementById('cal-grid');
-  const wds = ['日','一','二','三','四','五','六'];
-  let html = wds.map(w => `<div class="cal-wd">${w}</div>`).join('');
-  const first = new Date(calY, calM, 1).getDay();
-  const days = new Date(calY, calM+1, 0).getDate();
-  const prevDays = new Date(calY, calM, 0).getDate();
-  const today = new Date();
-  const dotColors = { breakfast: '#F4A7C3', lunch: '#A8D5BA', dinner: '#B5C8F0' };
-  for (let i = 0; i < first; i++) {
-    html += `<div class="cal-day other-month"><span class="day-num">${prevDays-first+i+1}</span></div>`;
+function renderCal(){
+  const mos=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  document.getElementById('cal-mo').textContent=calY+'年 '+mos[calM];
+  const grid=document.getElementById('cal-grid');
+  const wds=['日','一','二','三','四','五','六'];
+  let html=wds.map(w=>`<div class="cwd">${w}</div>`).join('');
+  const first=new Date(calY,calM,1).getDay();
+  const days=new Date(calY,calM+1,0).getDate();
+  const prev=new Date(calY,calM,0).getDate();
+  const now=new Date();
+  const dc={breakfast:'#F4A7C3',lunch:'#A8D5BA',dinner:'#B5C8F0'};
+  for(let i=0;i<first;i++)html+=`<div class="cday other"><span class="dnum">${prev-first+i+1}</span></div>`;
+  for(let d=1;d<=days;d++){
+    const isT=d===now.getDate()&&calM===now.getMonth()&&calY===now.getFullYear();
+    const isSel=S.selDate&&S.selDate.y===calY&&S.selDate.m===(calM+1)&&S.selDate.d===d;
+    const key=`${calY}-${calM+1}-${d}`;
+    const rec=S.records[key]||{};
+    let dots='';
+    if(rec.breakfast)dots+=`<div class="mdot" style="background:${dc.breakfast}"></div>`;
+    if(rec.lunch)dots+=`<div class="mdot" style="background:${dc.lunch}"></div>`;
+    if(rec.dinner)dots+=`<div class="mdot" style="background:${dc.dinner}"></div>`;
+    html+=`<div class="cday${isT?' today':''}${isSel&&!isT?' sel':''}" onclick="selDay(${calY},${calM+1},${d})"><span class="dnum">${d}</span><div class="mdots">${dots}</div></div>`;
   }
-  for (let d = 1; d <= days; d++) {
-    const isT = d===today.getDate()&&calM===today.getMonth()&&calY===today.getFullYear();
-    const isSel = S.selDate && S.selDate.y===calY && S.selDate.m===(calM+1) && S.selDate.d===d;
-    const key = `${calY}-${calM+1}-${d}`;
-    const rec = S.records[key] || {};
-    let dots = '';
-    if (rec.breakfast) dots += `<div class="mdot" style="background:${dotColors.breakfast}"></div>`;
-    if (rec.lunch) dots += `<div class="mdot" style="background:${dotColors.lunch}"></div>`;
-    if (rec.dinner) dots += `<div class="mdot" style="background:${dotColors.dinner}"></div>`;
-    html += `<div class="cal-day${isT?' today':''}${isSel&&!isT?' selected':''}" onclick="selectDay(${calY},${calM+1},${d})">
-      <span class="day-num">${d}</span>
-      <div class="meal-dots">${dots}</div>
-    </div>`;
-  }
-  grid.innerHTML = html;
-  if (S.selDate) renderDayRecords(S.selDate.y, S.selDate.m, S.selDate.d);
-  else renderDayRecords(today.getFullYear(), today.getMonth()+1, today.getDate());
+  grid.innerHTML=html;
+  const sd=S.selDate;
+  if(sd)renderDrec(sd.y,sd.m,sd.d);
+  else renderDrec(now.getFullYear(),now.getMonth()+1,now.getDate());
 }
 
-function selectDay(y, m, d) {
-  S.selDate = { y, m, d };
-  renderCal();
-}
+function selDay(y,m,d){S.selDate={y,m,d};renderCal();}
 
-function renderDayRecords(y, m, d) {
-  const key = `${y}-${m}-${d}`;
-  const rec = S.records[key] || {};
-  const today = new Date();
-  const isToday = d===today.getDate()&&m===(today.getMonth()+1)&&y===today.getFullYear();
-  const mealMeta = [
-    { k: 'breakfast', label: '早餐', em: '🌅', color: '#F4A7C3' },
-    { k: 'lunch', label: '午餐', em: '☀️', color: '#A8D5BA' },
-    { k: 'dinner', label: '晚餐', em: '🌙', color: '#B5C8F0' }
-  ];
-  const modeMap = { delivery: '外卖', dine: '出去吃', cook: '自己做', breakfast: '早餐流程', light: '轻食' };
-  const container = document.getElementById('day-records');
-  let html = `<div class="day-records-header">
-    <span class="day-records-title">${y}年${m}月${d}日${isToday?' · 今天':''}</span>
-    <button class="add-record-btn" onclick="openAddModal(${y},${m},${d})">＋ 添加记录</button>
-  </div>`;
-  let any = false;
-  mealMeta.forEach(({ k, label, em, color }) => {
-    if (rec[k]) {
-      any = true;
-      const r = rec[k];
-      const photoHtml = r.photo ? `<img class="meal-card-photo" src="${r.photo}" onclick="openLightbox('${r.photo}')" alt="">` : `<div class="meal-card-photo" style="display:flex;align-items:center;justify-content:center;font-size:22px">${em}</div>`;
-      html += `<div class="meal-card">
-        <div style="width:3px;height:100%;min-height:40px;border-radius:2px;background:${color};flex-shrink:0"></div>
-        <div class="meal-card-info">
-          <div class="meal-card-label"><span>${em} ${label}</span>${r.mode?`<span style="color:var(--text-hint)">· ${modeMap[r.mode]||''}</span>`:''}
+function renderDrec(y,m,d){
+  const key=`${y}-${m}-${d}`;
+  const rec=S.records[key]||{};
+  const now=new Date();
+  const isT=d===now.getDate()&&m===(now.getMonth()+1)&&y===now.getFullYear();
+  const mms=[{k:'breakfast',lbl:'早餐',em:'🌅',c:'#F4A7C3'},{k:'lunch',lbl:'午餐',em:'☀️',c:'#A8D5BA'},{k:'dinner',lbl:'晚餐',em:'🌙',c:'#B5C8F0'}];
+  const modeMap={delivery:'外卖',dine:'出去吃',cook:'自己做',breakfast:'早餐',light:'轻食',direct:''};
+  const el=document.getElementById('drec');
+  let html=`<div class="drec-hdr"><span class="drec-title">${y}年${m}月${d}日${isT?' · 今天':''}</span><button class="add-btn" onclick="openMealMo(${y},${m},${d})">＋ 添加</button></div>`;
+  let any=false;
+  mms.forEach(({k,lbl,em,c})=>{
+    if(rec[k]){
+      any=true;const r=rec[k];
+      const mLbl=r.mode&&modeMap[r.mode]?` · ${modeMap[r.mode]}`:'';
+      const thumb=r.photo
+        ?`<img class="mthumb" src="${r.photo}" onclick="openLbox('${r.photo.replace(/'/g,"\\'")}')" alt="">`
+        :`<div class="mthumb">${em}</div>`;
+      html+=`<div class="mcard">
+        <div class="mcard-bar" style="background:${c}"></div>
+        <div class="mcard-info">
+          <div class="mcard-lbl">${em} ${lbl}${mLbl}</div>
+          <div class="mcard-txt">${r.note||'无备注'}</div>
+          <div class="mcard-acts">
+            <button class="mcard-btn" onclick="editRec('${key}','${k}')">编辑</button>
+            <button class="mcard-btn del" onclick="delRec('${key}','${k}')">删除</button>
           </div>
-          <div class="meal-card-content">${r.note || '无备注'}</div>
-          <div class="meal-card-actions">
-            <button class="meal-card-btn" onclick="editRecord('${key}','${k}')">编辑</button>
-            <button class="meal-card-btn del" onclick="deleteRecord('${key}','${k}')">删除</button>
-          </div>
-        </div>
-        ${photoHtml}
-      </div>`;
+        </div>${thumb}</div>`;
     }
   });
-  if (!any) html += `<div class="empty-state">这天还没有记录<br><span style="font-size:11px">点击右上角添加</span></div>`;
-  container.innerHTML = html;
+  if(!any)html+=`<div class="empty">这天还没有记录<br><span style="font-size:11px">点击右上角添加</span></div>`;
+  el.innerHTML=html;
 }
 
-function openAddModal(y, m, d) {
-  S.editKey = `${y}-${m}-${d}`;
-  S.editMeal = null;
-  const mealMeta = [
-    { k: 'breakfast', label: '🌅 早餐', color: '#F4A7C3' },
-    { k: 'lunch', label: '☀️ 午餐', color: '#A8D5BA' },
-    { k: 'dinner', label: '🌙 晚餐', color: '#B5C8F0' }
-  ];
-  const rec = S.records[S.editKey] || {};
-  document.getElementById('modal-title').textContent = `${y}年${m}月${d}日 · 选择餐次`;
-  document.getElementById('modal-opts').innerHTML = mealMeta.map(mt =>
-    `<div class="modal-opt" onclick="startDirectRecord('${mt.k}')">
-      <span style="width:10px;height:10px;border-radius:50%;background:${mt.color};display:inline-block;flex-shrink:0"></span>
-      ${mt.label}${rec[mt.k] ? ' <span style="font-size:11px;color:var(--text-hint)">(已有记录，将覆盖)</span>' : ''}
-    </div>`
-  ).join('');
-  document.getElementById('meal-modal').classList.add('open');
+function openMealMo(y,m,d){
+  S.editKey=`${y}-${m}-${d}`;
+  const rec=S.records[S.editKey]||{};
+  const mms=[{k:'breakfast',lbl:'🌅 早餐',c:'#F4A7C3'},{k:'lunch',lbl:'☀️ 午餐',c:'#A8D5BA'},{k:'dinner',lbl:'🌙 晚餐',c:'#B5C8F0'}];
+  document.getElementById('meal-mo-t').textContent=`${y}年${m}月${d}日`;
+  document.getElementById('meal-mo-opts').innerHTML=mms.map(mt=>
+    `<div class="modal-opt" onclick="startDirect('${mt.k}')">
+      <span style="width:10px;height:10px;border-radius:50%;background:${mt.c};display:inline-block;flex-shrink:0"></span>
+      ${mt.lbl}${rec[mt.k]?'<span style="font-size:11px;color:var(--tx3);margin-left:4px">(已有)</span>':''}
+    </div>`).join('');
+  document.getElementById('meal-ov').classList.add('on');
+}
+function closeMealMo(){document.getElementById('meal-ov').classList.remove('on');}
+function startDirect(mt){S.mealTime=mt;S.mode='direct';S.spResult=null;S.photoData=null;closeMealMo();openRec('');}
+
+function editRec(key,mt){
+  const r=S.records[key]?.[mt];if(!r)return;
+  S.editKey=key;S.mealTime=mt;S.mode=r.mode||'direct';S.photoData=r.photo||null;
+  openRecEdit(r.note||'',true);
+}
+function delRec(key,mt){
+  if(!S.records[key])return;
+  delete S.records[key][mt];
+  if(!Object.keys(S.records[key]).length)delete S.records[key];
+  saveS();toast('已删除');renderCal();
 }
 
-function startDirectRecord(mealTime) {
-  S.mealTime = mealTime;
-  S.mode = 'direct';
-  S.spinResult = null;
-  S.photoData = null;
-  closeMealModal();
-  openRecordScreen();
+// ─── DECIDE ─────────────────────────────────────────────────────────────────
+function selMeal(t,el){
+  S.mealTime=t;
+  document.querySelectorAll('.mtab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  updModeCards();
+}
+function updModeCards(){
+  const bk=S.mealTime==='breakfast';
+  document.getElementById('mc-bk').style.display=bk?'flex':'none';
+  document.getElementById('mc-del').style.display=bk?'none':'flex';
+  document.getElementById('mc-dine').style.display=bk?'none':'flex';
+  document.getElementById('mc-cook').style.display=bk?'none':'flex';
 }
 
-function closeMealModal() {
-  document.getElementById('meal-modal').classList.remove('open');
+// ─── SINGLE SPINNER (外卖 / 出去吃) ─────────────────────────────────────────
+let spAngle=0,spRunning=false;
+
+function startSp(mode){
+  S.mode=mode;S.spMode=mode;S.spResult=null;S.editKey=null;
+  showSub('sp');
+  document.getElementById('sp-title').textContent=mode==='delivery'?'叫外卖':'出去吃';
+  document.getElementById('sp-main').textContent='';
+  document.getElementById('sp-hint').textContent='转动转盘，或在下方手动选';
+  document.getElementById('sp-rec-btn').style.display='none';
+  spAngle=0;
+  sizeWheel('sp-wheel-outer','sp-canvas','sp-hub');
+  renderSpWheel();
+}
+function renderSpWheel(){
+  drawWheel('sp-canvas',S.spOpts[S.spMode],spAngle);
+}
+function doSpinSp(){
+  if(spRunning)return;
+  const opts=S.spOpts[S.spMode];
+  if(!opts||!opts.length){toast('请先添加选项');return;}
+  spRunning=true;
+  document.getElementById('sp-main').textContent='';
+  document.getElementById('sp-hint').textContent='';
+  document.getElementById('sp-rec-btn').style.display='none';
+  const a0=spAngle;
+  anim(opts,'sp-canvas',a0,(res,fa)=>{
+    spAngle=fa;spRunning=false;
+    S.spResult=res;
+    document.getElementById('sp-main').textContent='✦ '+res;
+    document.getElementById('sp-hint').textContent='或在下方手动换一个';
+    document.getElementById('sp-rec-btn').style.display='block';
+    renderSpSheet(); // refresh sheet if open
+  });
 }
 
-function editRecord(key, mealTime) {
-  const rec = S.records[key]?.[mealTime];
-  if (!rec) return;
-  S.editKey = key;
-  S.editMeal = mealTime;
-  S.mealTime = mealTime;
-  S.mode = rec.mode || 'direct';
-  S.photoData = rec.photo || null;
-  openRecordScreen(rec.note || '', true);
+// Sheet for single spinner opts
+function openSheet(which){
+  // which: 'sp' or 'multi'
+  const title=which==='sp'
+    ?(S.spMode==='delivery'?'外卖选项':'出去吃选项')
+    :getCurCat()+' 选项';
+  document.getElementById('sheet-ttl').textContent=title;
+  document.getElementById('sheet-inp').value='';
+  renderSpSheet(which);
+  document.getElementById('sheet-ov').classList.add('on');
+  document.getElementById('sheet-ov').dataset.which=which;
+}
+function closeSheet(){document.getElementById('sheet-ov').classList.remove('on');}
+
+function getSheetOpts(){
+  const which=document.getElementById('sheet-ov').dataset.which;
+  if(which==='sp') return S.spOpts[S.spMode];
+  // multi
+  const cat=getCurCat();
+  const mm=S.multiMode;
+  if(!S.multiOpts[mm])S.multiOpts[mm]={};
+  if(!S.multiOpts[mm][cat])S.multiOpts[mm][cat]=[];
+  return S.multiOpts[mm][cat];
+}
+function setSheetOpts(arr){
+  const which=document.getElementById('sheet-ov').dataset.which;
+  if(which==='sp'){S.spOpts[S.spMode]=arr;}
+  else{const cat=getCurCat();const mm=S.multiMode;if(!S.multiOpts[mm])S.multiOpts[mm]={};S.multiOpts[mm][cat]=arr;}
+  saveS();
 }
 
-function deleteRecord(key, mealTime) {
-  if (!S.records[key]) return;
-  delete S.records[key][mealTime];
-  if (Object.keys(S.records[key]).length === 0) delete S.records[key];
-  saveState();
-  toast('已删除');
-  renderCal();
-}
-
-function openRecordScreen(noteVal = '', isEdit = false) {
-  const mealLabels = { breakfast:'早餐', lunch:'午餐', dinner:'晚餐' };
-  const modeLabels = { delivery:'外卖', dine:'出去吃', cook:'自己做', breakfast:'早餐', light:'轻食', direct:'直接记录' };
-  document.getElementById('rec-title').textContent = isEdit ? '编辑记录' : '记录这餐';
-  document.getElementById('rec-sub').textContent = `${mealLabels[S.mealTime]} · ${modeLabels[S.mode] || ''}`;
-  document.getElementById('rec-note').value = noteVal;
-  if (S.photoData) {
-    document.getElementById('rec-upload-area').style.display = 'none';
-    document.getElementById('rec-preview').style.display = 'block';
-    document.getElementById('rec-preview-img').src = S.photoData;
-  } else {
-    document.getElementById('rec-upload-area').style.display = 'block';
-    document.getElementById('rec-preview').style.display = 'none';
-  }
-  document.getElementById('photo-input').value = '';
-  showSub('record');
-}
-
-function handlePhoto(e) {
-  const f = e.target.files[0]; if (!f) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    S.photoData = ev.target.result;
-    document.getElementById('rec-preview-img').src = ev.target.result;
-    document.getElementById('rec-upload-area').style.display = 'none';
-    document.getElementById('rec-preview').style.display = 'block';
-  };
-  reader.readAsDataURL(f);
-}
-
-function removePhoto() {
-  S.photoData = null;
-  document.getElementById('rec-upload-area').style.display = 'block';
-  document.getElementById('rec-preview').style.display = 'none';
-  document.getElementById('photo-input').value = '';
-}
-
-function saveRecord() {
-  const note = document.getElementById('rec-note').value.trim();
-  const key = S.editKey || (() => { const t = new Date(); return `${t.getFullYear()}-${t.getMonth()+1}-${t.getDate()}`; })();
-  if (!S.records[key]) S.records[key] = {};
-  S.records[key][S.mealTime] = { mode: S.mode, note, photo: S.photoData, time: new Date().toISOString() };
-  saveState();
-  S.editKey = null; S.editMeal = null;
-  toast('记录已保存 ✓');
-  setTimeout(() => { showScreen('calendar'); S.selDate = { y: parseInt(key.split('-')[0]), m: parseInt(key.split('-')[1]), d: parseInt(key.split('-')[2]) }; renderCal(); }, 600);
-}
-
-// Lightbox
-function openLightbox(src) {
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox').classList.add('open');
-}
-function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
-
-// Decide
-function selMeal(t, el) {
-  S.mealTime = t;
-  document.querySelectorAll('.meal-tab').forEach(x => x.classList.remove('active'));
-  el.classList.add('active');
-  updateModeCards();
-}
-
-function updateModeCards() {
-  const isBk = S.mealTime === 'breakfast';
-  document.getElementById('mode-breakfast-only').style.display = isBk ? 'flex' : 'none';
-  document.getElementById('mode-delivery').style.display = isBk ? 'none' : 'flex';
-  document.getElementById('mode-dine').style.display = isBk ? 'none' : 'flex';
-  document.getElementById('mode-cook').style.display = isBk ? 'none' : 'flex';
-}
-
-// SPINNER
-let spAngle = 0, spRunning = false;
-
-function startSpinner(mode) {
-  S.mode = mode; S.spinResult = null;
-  S.spOptKey = mode;
-  S.editKey = null;
-  showSub('spinner');
-  document.getElementById('sp-title').textContent = mode === 'delivery' ? '叫外卖' : '出去吃';
-  document.getElementById('sp-result-main').textContent = '';
-  document.getElementById('sp-result-hint').textContent = '';
-  document.getElementById('sp-record-btn').style.display = 'none';
-  spAngle = 0;
-  renderSpOpts();
-  drawWheel('main-canvas', S.opts[mode], 0);
-}
-
-function renderSpOpts() {
-  const opts = S.opts[S.spOptKey];
-  document.getElementById('sp-opts-list').innerHTML = opts.map((o, i) =>
-    `<div class="opt-row${S.spinResult===o?' selected':''}" onclick="spManualSel(${i})">
+function renderSpSheet(){
+  const opts=getSheetOpts();
+  const curSel=document.getElementById('sheet-ov').dataset.which==='sp'
+    ?[S.spResult]
+    :(S.multiSel[getCurCat()]||[]);
+  document.getElementById('sheet-list').innerHTML=opts.map((o,i)=>
+    `<div class="opt-row${curSel.includes(o)?' on':''}" onclick="sheetToggle(${i})">
       <div class="opt-dot" style="background:${MC[i%MC.length]}"></div>
       <span class="opt-name">${o}</span>
-      <span class="opt-check">${S.spinResult===o?'✦':''}</span>
-      <button class="opt-del" onclick="event.stopPropagation();spDelOpt(${i})">×</button>
+      <span class="opt-chk">${curSel.includes(o)?'✦':''}</span>
+      <button class="opt-del" onclick="event.stopPropagation();sheetDel(${i})">×</button>
     </div>`).join('');
 }
-
-function spManualSel(i) {
-  S.spinResult = S.opts[S.spOptKey][i];
-  document.getElementById('sp-result-main').textContent = '✦ ' + S.spinResult;
-  document.getElementById('sp-result-hint').textContent = '手动选择';
-  document.getElementById('sp-record-btn').style.display = 'block';
-  renderSpOpts();
-}
-
-function spAddOpt() {
-  const inp = document.getElementById('sp-add-input');
-  const v = inp.value.trim(); if (!v) return;
-  S.opts[S.spOptKey].push(v); inp.value = ''; saveState();
-  renderSpOpts(); drawWheel('main-canvas', S.opts[S.spOptKey], spAngle);
-}
-
-function spDelOpt(i) {
-  S.opts[S.spOptKey].splice(i, 1); saveState();
-  if (S.spinResult === S.opts[S.spOptKey][i]) S.spinResult = null;
-  renderSpOpts(); drawWheel('main-canvas', S.opts[S.spOptKey], spAngle);
-}
-
-// ============================================================
-// SWIPEABLE MULTI-WHEEL ENGINE
-// prefix: 'bk' | 'ck' | 'lt'
-// cats: array of category names
-// optsMap: { catName: [opt,...] }
-// selMap: { catName: [selected,...] }
-// ============================================================
-const swipeState = {}; // prefix -> { step, angles:[] }
-
-function buildWheelTrack(prefix, cats, optsMap, selMap, onManualSel, openSettings) {
-  const trackEl = document.getElementById(prefix + '-wheel-track');
-  const wrapEl = document.getElementById(prefix + '-track-wrap');
-  const sw = wrapEl.offsetWidth || 260;
-  trackEl.innerHTML = '';
-  trackEl.style.width = (sw * cats.length) + 'px';
-
-  if (!swipeState[prefix]) swipeState[prefix] = { step: 0, angles: [] };
-  // Ensure angles array sized correctly
-  while (swipeState[prefix].angles.length < cats.length) swipeState[prefix].angles.push(0);
-
-  cats.forEach((cat, i) => {
-    const slide = document.createElement('div');
-    slide.className = 'wheel-slide';
-    slide.style.cssText = `flex-shrink:0;width:${sw}px;display:flex;align-items:center;justify-content:center;`;
-
-    // wheel-outer wrapper with gear button
-    const outer = document.createElement('div');
-    outer.className = 'wheel-outer';
-    outer.style.position = 'relative';
-
-    const canvas = document.createElement('canvas');
-    canvas.className = 'wheel-canvas';
-    canvas.id = prefix + '-canvas-' + i;
-    canvas.width = 520; canvas.height = 520;
-    canvas.style.cursor = 'pointer';
-    canvas.addEventListener('click', (e) => wheelClick(e, canvas.id, prefix, i, onManualSel));
-
-    const ptr = document.createElement('div'); ptr.className = 'wheel-ptr';
-    const hub = document.createElement('div'); hub.className = 'wheel-hub';
-
-    // Gear button (fix #5: settings in top-right corner of wheel)
-    const gear = document.createElement('button');
-    gear.className = 'wheel-gear-btn';
-    gear.innerHTML = '⚙';
-    gear.title = '设置 ' + cat + ' 选项';
-    gear.onclick = (e) => { e.stopPropagation(); openSettings(cat, i); };
-
-    outer.append(canvas, ptr, hub, gear);
-    slide.append(outer);
-    trackEl.append(slide);
-
-    drawWheel(canvas.id, optsMap[cat] || [], swipeState[prefix].angles[i]);
-  });
-
-  // Update track position to current step
-  moveTrack(prefix, swipeState[prefix].step);
-
-  // Setup touch swipe (fix #3)
-  setupSwipe(prefix, wrapEl, cats);
-}
-
-function moveTrack(prefix, step) {
-  const wrapEl = document.getElementById(prefix + '-track-wrap');
-  const trackEl = document.getElementById(prefix + '-wheel-track');
-  if (!trackEl) return;
-  const sw = wrapEl.offsetWidth || 260;
-  trackEl.style.transform = `translateX(-${step * sw}px)`;
-  swipeState[prefix].step = step;
-}
-
-function setupSwipe(prefix, wrapEl, cats) {
-  const old = wrapEl._swipeHandler;
-  if (old) {
-    wrapEl.removeEventListener('touchstart', old.start);
-    wrapEl.removeEventListener('touchmove', old.move);
-    wrapEl.removeEventListener('touchend', old.end);
-  }
-  let startX = 0, moved = false;
-  const onStart = (e) => { startX = e.touches[0].clientX; moved = false; };
-  const onMove = (e) => {
-    if (Math.abs(e.touches[0].clientX - startX) > 10) moved = true;
-  };
-  const onEnd = (e) => {
-    if (moved) {
-      const dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) < 30) return;
-      const cur = swipeState[prefix].step;
-      if (dx < 0 && cur < cats.length - 1) jumpToStep(prefix, cur + 1);
-      else if (dx > 0 && cur > 0) jumpToStep(prefix, cur - 1);
+function sheetToggle(i){
+  const which=document.getElementById('sheet-ov').dataset.which;
+  const opts=getSheetOpts();
+  const name=opts[i];
+  if(which==='sp'){
+    S.spResult=S.spResult===name?null:name;
+    if(S.spResult){
+      document.getElementById('sp-main').textContent='✦ '+S.spResult;
+      document.getElementById('sp-hint').textContent='手动选择';
+      document.getElementById('sp-rec-btn').style.display='block';
     }
+  } else {
+    const cat=getCurCat();
+    if(!S.multiSel[cat])S.multiSel[cat]=[];
+    if(S.multiSel[cat].includes(name))S.multiSel[cat]=S.multiSel[cat].filter(x=>x!==name);
+    else S.multiSel[cat].push(name);
+    updMultiUI();
+  }
+  renderSpSheet();
+}
+function sheetAdd(){
+  const v=document.getElementById('sheet-inp').value.trim();if(!v)return;
+  const opts=getSheetOpts();opts.push(v);
+  setSheetOpts(opts);
+  document.getElementById('sheet-inp').value='';
+  renderSpSheet();
+  // redraw wheel
+  const which=document.getElementById('sheet-ov').dataset.which;
+  if(which==='sp')drawWheel('sp-canvas',S.spOpts[S.spMode],spAngle);
+  else drawWheel('multi-canvas',S.multiOpts[S.multiMode]?.[getCurCat()]||[],multiAngle);
+}
+function sheetDel(i){
+  const opts=getSheetOpts();opts.splice(i,1);
+  setSheetOpts(opts);
+  renderSpSheet();
+  const which=document.getElementById('sheet-ov').dataset.which;
+  if(which==='sp')drawWheel('sp-canvas',S.spOpts[S.spMode],spAngle);
+  else drawWheel('multi-canvas',S.multiOpts[S.multiMode]?.[getCurCat()]||[],multiAngle);
+}
+
+// ─── MULTI SPINNER (早餐 / 做饭 / 轻食) ─────────────────────────────────────
+let multiAngle=0,multiRunning=false;
+
+function startBk(){S.mode='breakfast';startMulti('breakfast');}
+function startCkType(){showSub('ckt');}
+
+function startMulti(mode){
+  S.multiMode=mode;S.mode=mode;S.multiStep=0;S.editKey=null;
+  // Reset selections fresh for each new flow
+  S.multiSel={};
+  const cats=S.multiCats[mode]||[];
+  cats.forEach(c=>{S.multiSel[c]=[];});
+  showSub('multi');
+  document.getElementById('multi-title').textContent=mode==='breakfast'?'早餐转盘':mode==='cook'?'正式烹饪':'轻食搭配';
+  sizeWheel('multi-wheel-outer','multi-canvas','multi-hub');
+  setupSwipe();
+  renderMultiStep();
+}
+
+let _swipeX=null;
+function setupSwipe(){
+  const el=document.getElementById('sub-multi');
+  el.ontouchstart=e=>{_swipeX=e.touches[0].clientX;};
+  el.ontouchend=e=>{
+    if(_swipeX===null)return;
+    const dx=e.changedTouches[0].clientX-_swipeX;
+    _swipeX=null;
+    if(Math.abs(dx)<40)return; // ignore small moves
+    const cats=S.multiCats[S.multiMode]||[];
+    if(dx<0&&S.multiStep<cats.length-1){S.multiStep++;renderMultiStep();}
+    else if(dx>0&&S.multiStep>0){S.multiStep--;renderMultiStep();}
   };
-  wrapEl.addEventListener('touchstart', onStart, { passive: true });
-  wrapEl.addEventListener('touchmove', onMove, { passive: true });
-  wrapEl.addEventListener('touchend', onEnd, { passive: true });
-  wrapEl._swipeHandler = { start: onStart, move: onMove, end: onEnd };
 }
 
-function jumpToStep(prefix, step) {
-  swipeState[prefix].step = step;
-  moveTrack(prefix, step);
-  // update step UI
-  if (prefix === 'bk') { S.bkStep = step; refreshBkStepUI(); }
-  else if (prefix === 'ck') { S.ckStep = step; refreshCkStepUI(); }
-  else if (prefix === 'lt') { S.ltStep = step; refreshLtStepUI(); }
+function getCurCat(){
+  const cats=S.multiCats[S.multiMode]||[];
+  return cats[S.multiStep]||'';
 }
 
-// ======================== BREAKFAST ========================
-let bkRunning = false;
+function renderMultiStep(){
+  const cats=S.multiCats[S.multiMode]||[];
+  const step=S.multiStep;
 
-function startBreakfast() {
-  S.mode = 'breakfast'; S.bkStep = 0; S.bkSel = {};
-  S.opts.bkCats.forEach(c => { S.bkSel[c] = []; });
-  S.editKey = null;
-  if (swipeState['bk']) { swipeState['bk'].step = 0; swipeState['bk'].angles = S.opts.bkCats.map(() => 0); }
-  else swipeState['bk'] = { step: 0, angles: S.opts.bkCats.map(() => 0) };
-  showSub('breakfast');
-  setTimeout(() => {
-    buildWheelTrack('bk', S.opts.bkCats, S.opts.bkOpts, S.bkSel,
-      (cat, item) => bkManualSel(cat, item),
-      (cat, idx) => openSettingsModal('bk', cat));
-    refreshBkStepUI();
-  }, 50);
+  // Tabs
+  document.getElementById('multi-tabs').innerHTML=
+    cats.map((c,i)=>`<button class="stab${i===step?' on':i<step?' done':''}" onclick="jumpStep(${i})">${c}${i<step?'<span class="stab-del">✓</span>':''}</button>`).join('')
+    +`<button class="stab-add" onclick="openCatsSheet()" title="管理分类">⊕</button>`;
+
+  const cat=cats[step]||'';
+  const opts=(S.multiOpts[S.multiMode]||{})[cat]||[];
+  document.getElementById('multi-again').textContent='再来个'+cat;
+  document.getElementById('multi-next').textContent=step===cats.length-1?(S.mode==='breakfast'?'完成 →':'AI 评估 →'):'就这样 →';
+  multiAngle=0;
+  document.getElementById('multi-main').textContent='';
+  drawWheel('multi-canvas',opts,0);
+  updMultiUI();
 }
 
-function refreshBkStepUI() {
-  const cats = S.opts.bkCats; const step = S.bkStep; const cat = cats[step];
-  document.getElementById('bk-step-dots').innerHTML = cats.map((_,i) =>
-    `<div class="sdot ${i<step?'d':i===step?'a':'p'}" onclick="jumpToStep('bk',${i})" title="${cats[i]}"></div>`).join('');
-  document.getElementById('bk-step-label').textContent = `第 ${step+1} / 共 ${cats.length} 个转盘`;
-  document.getElementById('bk-step-title').textContent = '当前：' + cat;
-  const bkR = document.getElementById('bk-result-main');
-  bkR.textContent = ''; bkR.className = 'spin-result-main';
-  updateBkSelUI(cat);
+function jumpStep(i){
+  S.multiStep=i;renderMultiStep();
 }
 
-function bkManualSel(cat, name) {
-  if (!S.bkSel[cat]) S.bkSel[cat] = [];
-  if (S.bkSel[cat].includes(name)) S.bkSel[cat] = S.bkSel[cat].filter(x => x !== name);
-  else S.bkSel[cat].push(name);
-  updateBkSelUI(cat);
+function updMultiUI(){
+  const cat=getCurCat();
+  const sel=S.multiSel[cat]||[];
+  document.getElementById('multi-tags').innerHTML=sel.map(s=>
+    `<div class="tag">${s}<button onclick="rmMultiSel('${esc(cat)}','${esc(s)}')">×</button></div>`
+  ).join('')||`<div style="font-size:12px;color:var(--tx3)">还未选，转盘或⚙️手动选</div>`;
 }
 
-function updateBkSelUI(cat) {
-  const sel = S.bkSel[cat] || [];
-  document.getElementById('bk-selected').innerHTML = sel.map(s =>
-    `<div class="tag">${s}<button onclick="bkRemoveSel('${esc(cat)}','${esc(s)}')">×</button></div>`
-  ).join('') || `<div style="font-size:12px;color:var(--text-hint)">还未选，转盘或点选</div>`;
+function rmMultiSel(cat,item){
+  S.multiSel[cat]=(S.multiSel[cat]||[]).filter(x=>x!==item);
+  updMultiUI();
 }
 
-function bkRemoveSel(cat, item) {
-  S.bkSel[cat] = (S.bkSel[cat]||[]).filter(x=>x!==item);
-  updateBkSelUI(cat);
-}
-
-function bkNext() {
-  const cats = S.opts.bkCats;
-  if (S.bkStep < cats.length - 1) {
-    jumpToStep('bk', S.bkStep + 1);
-  } else {
-    const note = Object.entries(S.bkSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ');
-    S.spinResult = note;
-    goRecord();
-  }
-}
-
-// COOK TYPE
-function startCookType() { showSub('cook-type'); }
-
-// ======================== COOK FLOW ========================
-let ckRunning = false;
-
-function startCook(type) {
-  S.mode = type === 'light' ? 'light' : 'cook';
-  S.editKey = null;
-  if (type === 'light') { startLight(); return; }
-  S.ckStep = 0; S.ckSel = {};
-  S.opts.cookCats.forEach(c => { S.ckSel[c] = []; });
-  if (swipeState['ck']) { swipeState['ck'].step = 0; swipeState['ck'].angles = S.opts.cookCats.map(() => 0); }
-  else swipeState['ck'] = { step: 0, angles: S.opts.cookCats.map(() => 0) };
-  showSub('cook');
-  setTimeout(() => {
-    buildWheelTrack('ck', S.opts.cookCats, S.opts.cookOpts, S.ckSel,
-      (cat, item) => ckManualSel(cat, item),
-      (cat, idx) => openSettingsModal('ck', cat));
-    refreshCkStepUI();
-  }, 50);
-}
-
-function refreshCkStepUI() {
-  const cats = S.opts.cookCats; const step = S.ckStep; const cat = cats[step];
-  document.getElementById('ck-step-dots').innerHTML = cats.map((_,i) =>
-    `<div class="sdot ${i<step?'d':i===step?'a':'p'}" onclick="jumpToStep('ck',${i})" title="${cats[i]}"></div>`).join('');
-  document.getElementById('ck-step-label').textContent = `第 ${step+1} / 共 ${cats.length} 个转盘`;
-  document.getElementById('ck-step-title').textContent = '当前：' + cat;
-  const ckR = document.getElementById('ck-result-main');
-  ckR.textContent = ''; ckR.className = 'spin-result-main';
-  updateCkSelUI(cat);
-}
-
-function ckManualSel(cat, name) {
-  if (!S.ckSel[cat]) S.ckSel[cat] = [];
-  if (S.ckSel[cat].includes(name)) S.ckSel[cat] = S.ckSel[cat].filter(x=>x!==name);
-  else S.ckSel[cat].push(name);
-  updateCkSelUI(cat);
-}
-
-function updateCkSelUI(cat) {
-  const sel = S.ckSel[cat] || [];
-  document.getElementById('ck-selected').innerHTML = sel.map(s =>
-    `<div class="tag">${s}<button onclick="ckRemoveSel('${esc(cat)}','${esc(s)}')">×</button></div>`
-  ).join('') || `<div style="font-size:12px;color:var(--text-hint)">还未选，转盘或点选</div>`;
-}
-
-function ckRemoveSel(cat, item) {
-  S.ckSel[cat] = (S.ckSel[cat]||[]).filter(x=>x!==item);
-  updateCkSelUI(cat);
-}
-
-function ckNext() {
-  if (S.ckStep < S.opts.cookCats.length - 1) {
-    jumpToStep('ck', S.ckStep + 1);
-  } else { goAI(false); }
-}
-
-// ======================== LIGHT FOOD ========================
-let ltRunning = false;
-
-function startLight() {
-  S.lightSel = {};
-  S.ltStep = 0;
-  const cats = Object.keys(S.opts.lightCats);
-  cats.forEach(c => { S.lightSel[c] = []; });
-  if (swipeState['lt']) { swipeState['lt'].step = 0; swipeState['lt'].angles = cats.map(() => 0); }
-  else swipeState['lt'] = { step: 0, angles: cats.map(() => 0) };
-  showSub('light');
-  setTimeout(() => {
-    buildWheelTrack('lt', cats, S.opts.lightCats, S.lightSel,
-      (cat, item) => ltManualSel(cat, item),
-      (cat, idx) => openSettingsModal('lt', cat));
-    refreshLtStepUI();
-  }, 50);
-}
-
-function refreshLtStepUI() {
-  const cats = Object.keys(S.opts.lightCats); const step = S.ltStep; const cat = cats[step];
-  document.getElementById('lt-step-dots').innerHTML = cats.map((_,i) =>
-    `<div class="sdot ${i<step?'d':i===step?'a':'p'}" onclick="jumpToStep('lt',${i})" title="${cats[i]}"></div>`).join('');
-  document.getElementById('lt-step-label').textContent = `第 ${step+1} / 共 ${cats.length} 个转盘`;
-  document.getElementById('lt-step-title').textContent = '当前：' + cat;
-  const ltR = document.getElementById('lt-result-main');
-  ltR.textContent = ''; ltR.className = 'spin-result-main';
-  updateLtSelUI(cat);
-}
-
-function ltManualSel(cat, name) {
-  if (!S.lightSel[cat]) S.lightSel[cat] = [];
-  if (S.lightSel[cat].includes(name)) S.lightSel[cat] = S.lightSel[cat].filter(x=>x!==name);
-  else S.lightSel[cat].push(name);
-  updateLtSelUI(cat);
-}
-
-function updateLtSelUI(cat) {
-  const sel = S.lightSel[cat] || [];
-  document.getElementById('lt-selected').innerHTML = sel.map(s =>
-    `<div class="tag">${s}<button onclick="ltRemoveSel('${esc(cat)}','${esc(s)}')">×</button></div>`
-  ).join('') || `<div style="font-size:12px;color:var(--text-hint)">还未选，转盘或点选</div>`;
-}
-
-function ltRemoveSel(cat, item) {
-  S.lightSel[cat] = (S.lightSel[cat]||[]).filter(x=>x!==item);
-  updateLtSelUI(cat);
-}
-
-function ltNext() {
-  const cats = Object.keys(S.opts.lightCats);
-  if (S.ltStep < cats.length - 1) {
-    jumpToStep('lt', S.ltStep + 1);
-  } else { goAI(true); }
-}
-
-// ======================== SETTINGS MODAL (fix #4 + #5) ========================
-// Supports bk / ck / lt flows
-// Opens a bottom sheet to manage options for a specific wheel category
-// Also allows adding/removing the whole wheel (category)
-let _settingsCtx = null; // { prefix, cat }
-
-function openSettingsModal(prefix, cat) {
-  _settingsCtx = { prefix, cat };
-  document.getElementById('settings-modal-title').textContent = '⚙ ' + cat + ' 的选项';
-  renderSettingsBody();
-  document.getElementById('settings-modal').classList.add('open');
-}
-
-function closeSettingsModal() {
-  document.getElementById('settings-modal').classList.remove('open');
-  // Rebuild wheels to reflect changes
-  if (_settingsCtx) {
-    const { prefix } = _settingsCtx;
-    rebuildAfterSettings(prefix);
-    _settingsCtx = null;
-  }
-}
-
-function getOptsMap(prefix) {
-  if (prefix === 'bk') return S.opts.bkOpts;
-  if (prefix === 'ck') return S.opts.cookOpts;
-  if (prefix === 'lt') return S.opts.lightCats;
-}
-function getCats(prefix) {
-  if (prefix === 'bk') return S.opts.bkCats;
-  if (prefix === 'ck') return S.opts.cookCats;
-  if (prefix === 'lt') return Object.keys(S.opts.lightCats);
-}
-function addCat(prefix, newCat) {
-  if (!newCat.trim()) return;
-  if (prefix === 'bk') { if (!S.opts.bkCats.includes(newCat)) { S.opts.bkCats.push(newCat); S.opts.bkOpts[newCat] = []; } }
-  else if (prefix === 'ck') { if (!S.opts.cookCats.includes(newCat)) { S.opts.cookCats.push(newCat); S.opts.cookOpts[newCat] = []; } }
-  else if (prefix === 'lt') { if (!S.opts.lightCats[newCat]) S.opts.lightCats[newCat] = []; }
-  saveState();
-}
-function delCat(prefix, cat) {
-  if (prefix === 'bk') { S.opts.bkCats = S.opts.bkCats.filter(c=>c!==cat); delete S.opts.bkOpts[cat]; }
-  else if (prefix === 'ck') { S.opts.cookCats = S.opts.cookCats.filter(c=>c!==cat); delete S.opts.cookOpts[cat]; }
-  else if (prefix === 'lt') { delete S.opts.lightCats[cat]; }
-  saveState();
-}
-
-function renderSettingsBody() {
-  const { prefix, cat } = _settingsCtx;
-  const optsMap = getOptsMap(prefix);
-  const cats = getCats(prefix);
-  const opts = optsMap[cat] || [];
-  const canDel = cats.length > 1; // Don't allow deleting if only 1 wheel left
-
-  let html = '';
-  // Current options list
-  opts.forEach((o, i) => {
-    html += `<div class="settings-opt-row">
-      <div class="opt-dot" style="background:${MC[i%MC.length]};width:10px;height:10px;border-radius:50%;flex-shrink:0"></div>
-      <span class="settings-opt-name">${o}</span>
-      <button class="settings-opt-del" onclick="settingsDelOpt(${i})">×</button>
-    </div>`;
+function doSpinMulti(){
+  if(multiRunning)return;
+  const cat=getCurCat();
+  const opts=(S.multiOpts[S.multiMode]||{})[cat]||[];
+  if(!opts.length){toast('请先添加选项（点击右上角⚙️）');return;}
+  multiRunning=true;
+  document.getElementById('multi-main').textContent='';
+  const a0=multiAngle;
+  anim(opts,'multi-canvas',a0,(res,fa)=>{
+    multiAngle=fa;multiRunning=false;
+    document.getElementById('multi-main').textContent='✦ '+res;
+    if(!S.multiSel[cat])S.multiSel[cat]=[];
+    if(!S.multiSel[cat].includes(res))S.multiSel[cat].push(res);
+    updMultiUI();
   });
-  // Add option row
-  html += `<div class="settings-add-row">
-    <input id="settings-add-inp" placeholder="添加选项…" onkeypress="if(event.key==='Enter')settingsAddOpt()">
-    <button onclick="settingsAddOpt()">添加</button>
-  </div>`;
-  // Divider
-  html += `<div style="height:1px;background:var(--border);margin:4px 0"></div>`;
-  // Add new wheel
-  html += `<div style="font-size:12px;color:var(--text-sub);margin-bottom:4px">增加转盘</div>
-  <div class="settings-add-cat-row">
-    <input id="settings-add-cat-inp" placeholder="新转盘名称（如：甜品）" onkeypress="if(event.key==='Enter')settingsAddCat()">
-    <button onclick="settingsAddCat()">添加</button>
-  </div>`;
-  // Delete current wheel
-  if (canDel) {
-    html += `<button class="settings-del-cat-btn" onclick="settingsDelCat()">删除「${cat}」转盘</button>`;
+}
+
+function multiNext(){
+  const cats=S.multiCats[S.multiMode]||[];
+  if(S.multiStep<cats.length-1){
+    S.multiStep++;renderMultiStep();
   } else {
-    html += `<div style="font-size:11px;color:var(--text-hint);text-align:center">至少保留一个转盘</div>`;
-  }
-
-  document.getElementById('settings-modal-body').innerHTML = html;
-}
-
-function settingsAddOpt() {
-  const inp = document.getElementById('settings-add-inp');
-  const v = inp.value.trim(); if (!v) return;
-  const { prefix, cat } = _settingsCtx;
-  const optsMap = getOptsMap(prefix);
-  if (!optsMap[cat]) optsMap[cat] = [];
-  optsMap[cat].push(v); inp.value = '';
-  saveState(); renderSettingsBody();
-  // Redraw the current wheel live
-  const step = swipeState[prefix] ? swipeState[prefix].step : 0;
-  const cats = getCats(prefix);
-  const catIdx = cats.indexOf(cat);
-  if (catIdx >= 0) {
-    const angle = swipeState[prefix] ? (swipeState[prefix].angles[catIdx] || 0) : 0;
-    drawWheel(prefix + '-canvas-' + catIdx, optsMap[cat], angle);
+    if(S.mode==='breakfast'){
+      // build note and go to record
+      const note=Object.entries(S.multiSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ');
+      S.spResult=note;goRec();
+    } else {
+      goAI();
+    }
   }
 }
 
-function settingsDelOpt(i) {
-  const { prefix, cat } = _settingsCtx;
-  const optsMap = getOptsMap(prefix);
-  if (!optsMap[cat] || !optsMap[cat].length) return;
-  optsMap[cat].splice(i, 1);
-  saveState(); renderSettingsBody();
-  const cats = getCats(prefix);
-  const catIdx = cats.indexOf(cat);
-  if (catIdx >= 0) {
-    const angle = swipeState[prefix] ? (swipeState[prefix].angles[catIdx] || 0) : 0;
-    drawWheel(prefix + '-canvas-' + catIdx, optsMap[cat], angle);
+// Manage categories sheet
+function openCatsSheet(){
+  const mm=S.multiMode;
+  const labels={breakfast:'早餐',cook:'正式烹饪',light:'轻食'};
+  document.getElementById('cats-sheet-ttl').textContent=(labels[mm]||mm)+' · 管理分类';
+  document.getElementById('cats-inp').value='';
+  renderCatsSheet();
+  document.getElementById('cats-ov').classList.add('on');
+}
+function closeCatsSheet(){document.getElementById('cats-ov').classList.remove('on');}
+function renderCatsSheet(){
+  const cats=S.multiCats[S.multiMode]||[];
+  document.getElementById('cats-list').innerHTML=cats.map((c,i)=>
+    `<div class="cat-row">
+      <span class="cat-name">${c}</span>
+      <button class="cat-del" onclick="catDel(${i})">×</button>
+    </div>`).join('');
+}
+function catsAdd(){
+  const v=document.getElementById('cats-inp').value.trim();if(!v)return;
+  if(!S.multiCats[S.multiMode])S.multiCats[S.multiMode]=[];
+  S.multiCats[S.multiMode].push(v);
+  if(!S.multiOpts[S.multiMode])S.multiOpts[S.multiMode]={};
+  if(!S.multiOpts[S.multiMode][v])S.multiOpts[S.multiMode][v]=[];
+  if(!S.multiSel[v])S.multiSel[v]=[];
+  document.getElementById('cats-inp').value='';
+  saveS();renderCatsSheet();renderMultiStep();
+}
+function catDel(i){
+  S.multiCats[S.multiMode].splice(i,1);
+  if(S.multiStep>=S.multiCats[S.multiMode].length)S.multiStep=Math.max(0,S.multiCats[S.multiMode].length-1);
+  saveS();renderCatsSheet();renderMultiStep();
+}
+
+// ─── WHEEL ENGINE ────────────────────────────────────────────────────────────
+function sizeWheel(outerID,canvasID,hubID){
+  const vw=Math.min(window.innerWidth,430);
+  const sz=Math.min(Math.floor(vw*0.72),280);
+  const outer=document.getElementById(outerID);
+  const canvas=document.getElementById(canvasID);
+  const hub=document.getElementById(hubID);
+  outer.style.width=sz+'px';outer.style.height=sz+'px';
+  canvas.width=sz*2;canvas.height=sz*2; // retina
+  canvas.style.width=sz+'px';canvas.style.height=sz+'px';
+  const hubSz=Math.round(sz*0.13);
+  hub.style.width=hubSz+'px';hub.style.height=hubSz+'px';
+}
+
+function drawWheel(canvasID,opts,angle){
+  const canvas=document.getElementById(canvasID);
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,cx=W/2,cy=W/2,r=cx-4;
+  ctx.clearRect(0,0,W,W);
+  if(!opts||!opts.length){
+    ctx.fillStyle='#f0f0f0';ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#aaa';ctx.font=`${W*0.055}px sans-serif`;ctx.textAlign='center';ctx.fillText('请添加选项',cx,cy+6);return;
   }
+  const n=opts.length;
+  const slice=(Math.PI*2)/n;
+  // shadow ring
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,r+3,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.4)';ctx.fill();ctx.restore();
+
+  opts.forEach((opt,i)=>{
+    const a=i*slice-Math.PI/2+angle;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,a,a+slice);ctx.closePath();
+    ctx.fillStyle=MC[i%MC.length];ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=W*0.008;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(a+slice/2);
+    const fs=Math.max(W*0.04,Math.min(W*0.055,W*0.8/n));
+    ctx.font=`600 ${fs}px 'Noto Sans SC',sans-serif`;
+    ctx.textAlign='right';ctx.fillStyle=MCD[i%MCD.length];
+    const label=opt.length>5?opt.slice(0,4)+'…':opt;
+    ctx.fillText(label,r-W*0.04,fs*0.35);
+    ctx.restore();
+  });
+  // outer ring
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=W*0.012;ctx.stroke();
 }
 
-function settingsAddCat() {
-  const inp = document.getElementById('settings-add-cat-inp');
-  const v = inp.value.trim(); if (!v) return;
-  const { prefix } = _settingsCtx;
-  addCat(prefix, v); inp.value = '';
-  // Switch to editing the new cat
-  _settingsCtx.cat = v;
-  document.getElementById('settings-modal-title').textContent = '⚙ ' + v + ' 的选项';
-  renderSettingsBody();
-}
-
-function settingsDelCat() {
-  const { prefix, cat } = _settingsCtx;
-  const cats = getCats(prefix);
-  if (cats.length <= 1) { toast('至少保留一个转盘'); return; }
-  if (!confirm(`确定删除「${cat}」转盘吗？`)) return;
-  delCat(prefix, cat);
-  // Switch focus to first remaining cat
-  const newCats = getCats(prefix);
-  _settingsCtx.cat = newCats[0];
-  document.getElementById('settings-modal-title').textContent = '⚙ ' + newCats[0] + ' 的选项';
-  renderSettingsBody();
-}
-
-function rebuildAfterSettings(prefix) {
-  if (prefix === 'bk') {
-    // Ensure selections stay valid
-    S.opts.bkCats.forEach(c => { if (!S.bkSel[c]) S.bkSel[c] = []; });
-    if (S.bkStep >= S.opts.bkCats.length) S.bkStep = Math.max(0, S.opts.bkCats.length - 1);
-    swipeState['bk'] = { step: S.bkStep, angles: S.opts.bkCats.map((_,i) => (swipeState['bk']?.angles[i] || 0)) };
-    buildWheelTrack('bk', S.opts.bkCats, S.opts.bkOpts, S.bkSel,
-      (cat, item) => bkManualSel(cat, item),
-      (cat) => openSettingsModal('bk', cat));
-    refreshBkStepUI();
-  } else if (prefix === 'ck') {
-    S.opts.cookCats.forEach(c => { if (!S.ckSel[c]) S.ckSel[c] = []; });
-    if (S.ckStep >= S.opts.cookCats.length) S.ckStep = Math.max(0, S.opts.cookCats.length - 1);
-    swipeState['ck'] = { step: S.ckStep, angles: S.opts.cookCats.map((_,i) => (swipeState['ck']?.angles[i] || 0)) };
-    buildWheelTrack('ck', S.opts.cookCats, S.opts.cookOpts, S.ckSel,
-      (cat, item) => ckManualSel(cat, item),
-      (cat) => openSettingsModal('ck', cat));
-    refreshCkStepUI();
-  } else if (prefix === 'lt') {
-    const cats = Object.keys(S.opts.lightCats);
-    cats.forEach(c => { if (!S.lightSel[c]) S.lightSel[c] = []; });
-    if (S.ltStep >= cats.length) S.ltStep = Math.max(0, cats.length - 1);
-    swipeState['lt'] = { step: S.ltStep, angles: cats.map((_,i) => (swipeState['lt']?.angles[i] || 0)) };
-    buildWheelTrack('lt', cats, S.opts.lightCats, S.lightSel,
-      (cat, item) => ltManualSel(cat, item),
-      (cat) => openSettingsModal('lt', cat));
-    refreshLtStepUI();
-  }
-}
-
-// SPIN
-function doSpin(which) {
-  let opts, canvasId, angle, running, onDone;
-  if (which === 'main') {
-    opts = S.opts[S.spOptKey]; canvasId = 'main-canvas';
-    if (spRunning) return; spRunning = true;
-    const a0 = spAngle;
-    spinAnim(opts, canvasId, a0, (res, finalA) => {
-      spAngle = finalA; spRunning = false;
-      S.spinResult = res;
-      document.getElementById('sp-result-main').textContent = '✦ ' + res;
-      document.getElementById('sp-result-hint').textContent = '或在下方手动换一个';
-      document.getElementById('sp-record-btn').style.display = 'block';
-      renderSpOpts();
-    });
-  } else if (which === 'bk') {
-    const step = swipeState['bk'] ? swipeState['bk'].step : S.bkStep;
-    S.bkStep = step;
-    const cat = S.opts.bkCats[step];
-    opts = S.opts.bkOpts[cat] || []; canvasId = 'bk-canvas-' + step;
-    if (bkRunning) return; if (!opts.length) { toast('请先添加选项'); return; }
-    bkRunning = true;
-    const a0 = swipeState['bk'] ? (swipeState['bk'].angles[step] || 0) : 0;
-    spinAnim(opts, canvasId, a0, (res, finalA) => {
-      if (swipeState['bk']) swipeState['bk'].angles[step] = finalA;
-      bkRunning = false;
-      const el = document.getElementById('bk-result-main');
-      el.textContent = '本次：' + res; el.className = 'spin-result-main has-result';
-      if (!S.bkSel[cat]) S.bkSel[cat] = [];
-      if (!S.bkSel[cat].includes(res)) S.bkSel[cat].push(res);
-      updateBkSelUI(cat);
-    });
-  } else if (which === 'ck') {
-    const step = swipeState['ck'] ? swipeState['ck'].step : S.ckStep;
-    S.ckStep = step;
-    const cat = S.opts.cookCats[step];
-    opts = S.opts.cookOpts[cat] || []; canvasId = 'ck-canvas-' + step;
-    if (ckRunning) return; if (!opts.length) { toast('请先添加菜品'); return; }
-    ckRunning = true;
-    const a0 = swipeState['ck'] ? (swipeState['ck'].angles[step] || 0) : 0;
-    spinAnim(opts, canvasId, a0, (res, finalA) => {
-      if (swipeState['ck']) swipeState['ck'].angles[step] = finalA;
-      ckRunning = false;
-      const el = document.getElementById('ck-result-main');
-      el.textContent = '本次：' + res; el.className = 'spin-result-main has-result';
-      if (!S.ckSel[cat]) S.ckSel[cat] = [];
-      if (!S.ckSel[cat].includes(res)) S.ckSel[cat].push(res);
-      updateCkSelUI(cat);
-    });
-  } else if (which === 'lt') {
-    const cats = Object.keys(S.opts.lightCats);
-    const step = swipeState['lt'] ? swipeState['lt'].step : S.ltStep;
-    S.ltStep = step;
-    const cat = cats[step];
-    opts = S.opts.lightCats[cat] || []; canvasId = 'lt-canvas-' + step;
-    if (ltRunning) return; if (!opts.length) { toast('请先添加选项'); return; }
-    ltRunning = true;
-    const a0 = swipeState['lt'] ? (swipeState['lt'].angles[step] || 0) : 0;
-    spinAnim(opts, canvasId, a0, (res, finalA) => {
-      if (swipeState['lt']) swipeState['lt'].angles[step] = finalA;
-      ltRunning = false;
-      const el = document.getElementById('lt-result-main');
-      el.textContent = '本次：' + res; el.className = 'spin-result-main has-result';
-      if (!S.lightSel[cat]) S.lightSel[cat] = [];
-      if (!S.lightSel[cat].includes(res)) S.lightSel[cat].push(res);
-      updateLtSelUI(cat);
-    });
-  }
-}
-
-function getWheelResult(opts, angle) {
-  const n = opts.length;
-  const slice = (Math.PI * 2) / n;
-  const norm = ((-angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-  const idx = Math.floor(norm / slice) % n;
-  return Math.max(0, idx);
-}
-
-// Click on wheel to select option
-function wheelClick(e, canvasId, prefix, step, onManualSel) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const rect = canvas.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-  let clientX, clientY;
-  if (e.changedTouches && e.changedTouches.length) {
-    clientX = e.changedTouches[0].clientX; clientY = e.changedTouches[0].clientY;
-  } else if (e.touches && e.touches.length) {
-    clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX; clientY = e.clientY;
-  }
-  if (!clientX || !clientY) return;
-  const dx = clientX - cx;
-  const dy = clientY - cy;
-  const r = rect.width / 2;
-  if (dx*dx + dy*dy > r*r * 0.95) return;
-  // Angle of click from top, clockwise
-  let clickAngle = Math.atan2(dy, dx) + Math.PI / 2;
-  if (clickAngle < 0) clickAngle += Math.PI * 2;
-  // Current rotation
-  const sw = swipeState[prefix];
-  const angle = sw ? (sw.angles[step] || 0) : 0;
-  // Get options for this category
-  let cat, opts;
-  if (prefix === 'bk') { cat = S.opts.bkCats[step]; opts = S.opts.bkOpts[cat] || []; }
-  else if (prefix === 'ck') { cat = S.opts.cookCats[step]; opts = S.opts.cookOpts[cat] || []; }
-  else { const cks = Object.keys(S.opts.lightCats); cat = cks[step]; opts = S.opts.lightCats[cat] || []; }
-  if (!opts.length) return;
-  const slice = (Math.PI * 2) / opts.length;
-  const adjusted = ((clickAngle - angle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-  const idx = Math.floor(adjusted / slice) % opts.length;
-  const item = opts[idx];
-  if (!item) return;
-  // Toggle selection
-  onManualSel(cat, item);
-  // Show result
-  const resEl = document.getElementById(prefix === 'bk' ? 'bk-result-main' : prefix === 'ck' ? 'ck-result-main' : 'lt-result-main');
-  resEl.textContent = '✦ ' + item; resEl.className = 'spin-result-main has-result';
-  // Flash highlight
-  const ctx = canvas.getContext('2d');
-  const sa = idx * slice - Math.PI / 2 + angle;
-  ctx.save();
-  ctx.beginPath(); ctx.moveTo(260, 260);
-  ctx.arc(260, 260, 248, sa, sa + slice); ctx.closePath();
-  ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fill();
-  ctx.restore();
-  setTimeout(() => drawWheel(canvasId, opts, angle), 180);
-}
-
-function spinAnim(opts, canvasId, startAngle, onDone) {
-  if (!opts || !opts.length) { toast('请先添加选项'); return; }
-  const total = (5 + Math.random() * 5) * Math.PI * 2;
-  const dur = 2600 + Math.random() * 1000;
-  const t0 = performance.now();
-  function frame(now) {
-    const t = Math.min((now - t0) / dur, 1);
-    const e = 1 - Math.pow(1 - t, 3);
-    const a = startAngle + total * e;
-    drawWheel(canvasId, opts, a);
-    if (t < 1) { requestAnimationFrame(frame); return; }
-    const idx = getWheelResult(opts, a);
-    onDone(opts[idx], a);
+function anim(opts,canvasID,startAngle,onDone){
+  const total=(5+Math.random()*5)*Math.PI*2;
+  const dur=2600+Math.random()*1000;
+  const t0=performance.now();
+  function frame(now){
+    const t=Math.min((now-t0)/dur,1);
+    const e=1-Math.pow(1-t,3);
+    const a=startAngle+total*e;
+    drawWheel(canvasID,opts,a);
+    if(t<1){requestAnimationFrame(frame);return;}
+    // Slice i is drawn starting at: i*slice - PI/2 + angle
+    // Pointer is at top = angle 0 in canvas coords = -PI/2 in unit circle
+    // We need which slice covers canvas angle -PI/2 (top)
+    // Slice i covers: [i*slice - PI/2 + a, (i+1)*slice - PI/2 + a]
+    // Solve: i*slice - PI/2 + a <= -PI/2 < (i+1)*slice - PI/2 + a
+    //   => i*slice <= -a < (i+1)*slice  (mod 2PI)
+    //   => index = floor((-a mod 2PI) / slice)
+    const n=opts.length;
+    const slice=(Math.PI*2)/n;
+    const norm=((-a)%(Math.PI*2)+(Math.PI*2))%(Math.PI*2);
+    const idx=Math.floor(norm/slice)%n;
+    onDone(opts[idx],a);
   }
   requestAnimationFrame(frame);
 }
 
-function drawWheel(canvasId, opts, angle) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = 520, cx = 260, cy = 260, r = 248;
-  ctx.clearRect(0, 0, W, W);
-  if (!opts || !opts.length) {
-    ctx.fillStyle = '#f5f5f5';
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#aaa'; ctx.font = '28px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText('请添加选项', cx, cy + 10); return;
-  }
-  const slice = (Math.PI * 2) / opts.length;
-  ctx.save();
-  ctx.beginPath(); ctx.arc(cx, cy, r+4, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
-  ctx.restore();
-  opts.forEach((opt, i) => {
-    const a = i * slice - Math.PI / 2 + angle;
-    ctx.beginPath(); ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, a, a + slice); ctx.closePath();
-    ctx.fillStyle = MC[i % MC.length]; ctx.fill();
-    ctx.strokeStyle = 'white'; ctx.lineWidth = 3; ctx.stroke();
-    ctx.save(); ctx.translate(cx, cy); ctx.rotate(a + slice / 2);
-    const fs = Math.max(18, Math.min(26, 240 / opts.length + 8));
-    ctx.font = `500 ${fs}px 'Noto Sans SC', sans-serif`;
-    ctx.textAlign = 'right'; ctx.fillStyle = MCD[i % MCD.length];
-    const label = opt.length > 5 ? opt.slice(0, 4) + '…' : opt;
-    ctx.fillText(label, r - 16, fs / 3);
-    ctx.restore();
-  });
-  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
-  ctx.strokeStyle = 'rgba(255,255,255,0.8)'; ctx.lineWidth = 5; ctx.stroke();
-}
-
-// AI
-async function goAI(isLight) {
+// ─── AI ─────────────────────────────────────────────────────────────────────
+async function goAI(){
   showSub('ai');
-  document.getElementById('ai-loading').style.display = 'flex';
-  const res = document.getElementById('ai-result');
-  res.style.display = 'none';
-  let menu = '';
-  if (isLight) {
-    menu = Object.entries(S.lightSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join('\n');
-  } else {
-    menu = Object.entries(S.ckSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join('\n');
-  }
-  const mealLabel = S.mealTime==='lunch'?'午餐':'晚餐';
-  const prompt = `我今天${mealLabel}${isLight?'准备吃轻食':'打算自己烹饪'}：\n${menu}\n\n请评估营养均衡性，用JSON格式回复（直接输出JSON，不要markdown）：{"score":82,"protein":"蛋白质充足","vegetable":"蔬菜丰富","carb":"碳水适中","fat":"油脂正常","summary":"两三句整体评估"}`;
-  try {
-    const r = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${DSKEY}`},
-      body: JSON.stringify({ model:'deepseek-chat', max_tokens:400, messages:[{role:'user',content:prompt}] })
-    });
-    const d = await r.json();
-    let t = d.choices?.[0]?.message?.content || '{}';
-    t = t.replace(/```json|```/g,'').trim();
-    S.aiResult = JSON.parse(t);
-  } catch(e) {
-    S.aiResult = { score:75, protein:'蛋白质尚可', vegetable:'蔬菜合理', carb:'碳水适量', fat:'油脂正常', summary:'整体营养均衡，建议多补充新鲜蔬果。' };
+  document.getElementById('ai-load').style.display='flex';
+  document.getElementById('ai-res').style.display='none';
+  const menu=Object.entries(S.multiSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join('\n');
+  const ml=S.mealTime==='lunch'?'午餐':'晚餐';
+  const prompt=`我今天${ml}${S.mode==='light'?'准备吃轻食':'打算烹饪'}：\n${menu}\n\n请评估营养均衡性，直接输出JSON不要markdown：{"score":82,"protein":"蛋白质充足","vegetable":"蔬菜丰富","carb":"碳水适中","fat":"油脂正常","summary":"两三句整体评估"}`;
+  try{
+    const r=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DSKEY}`},body:JSON.stringify({model:'deepseek-chat',max_tokens:400,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    let t=d.choices?.[0]?.message?.content||'{}';
+    t=t.replace(/```json|```/g,'').trim();
+    S.aiResult=JSON.parse(t);
+  }catch(e){
+    S.aiResult={score:75,protein:'蛋白质尚可',vegetable:'蔬菜合理',carb:'碳水适量',fat:'油脂正常',summary:'整体营养均衡，建议多补充新鲜蔬果。'};
   }
   renderAI();
 }
-
-function renderAI() {
-  document.getElementById('ai-loading').style.display = 'none';
-  const res = document.getElementById('ai-result');
-  res.style.display = 'flex'; res.style.flexDirection = 'column';
-  const sc = S.aiResult.score || 75;
-  const col = sc>=80?'var(--mint-dark)':sc>=60?'var(--peach-dark)':'#A32D2D';
-  const bg = sc>=80?'var(--mint-light)':sc>=60?'var(--peach-light)':'#FCEBEB';
-  document.getElementById('ai-score-block').style.background = bg;
-  document.getElementById('ai-score-block').innerHTML = `
-    <div><div class="score-num" style="color:${col}">${sc}</div><div class="score-label" style="color:${col}">营养评分</div></div>
-    <div class="score-rows">
-      ${[['蛋白质',S.aiResult.protein],['蔬菜',S.aiResult.vegetable],['碳水',S.aiResult.carb],['油脂',S.aiResult.fat]].map(([k,v])=>`<div class="score-row"><span class="score-row-k">${k}</span><span class="score-row-v">${v||'正常'}</span></div>`).join('')}
-    </div>`;
-  const selData = S.mode === 'light' ? S.lightSel : S.ckSel;
-  document.getElementById('ai-menu-list').innerHTML = Object.entries(selData).filter(([k,v])=>v.length>0).map(([k,v])=>`<div style="margin-bottom:2px"><span style="color:var(--text-hint)">${k}：</span>${v.join(' / ')}</div>`).join('');
-  document.getElementById('ai-summary').textContent = S.aiResult.summary || '';
+function renderAI(){
+  document.getElementById('ai-load').style.display='none';
+  const res=document.getElementById('ai-res');res.style.display='flex';res.style.flexDirection='column';
+  const sc=S.aiResult.score||75;
+  const col=sc>=80?'var(--mint-dk)':sc>=60?'var(--peach-dk)':'#A32D2D';
+  const bg=sc>=80?'var(--mint-l)':sc>=60?'var(--peach-l)':'#FCEBEB';
+  document.getElementById('ai-score').style.background=bg;
+  document.getElementById('ai-score').innerHTML=`<div><div class="score-n" style="color:${col}">${sc}</div><div class="score-lbl" style="color:${col}">营养评分</div></div><div class="score-rows">${[['蛋白质',S.aiResult.protein],['蔬菜',S.aiResult.vegetable],['碳水',S.aiResult.carb],['油脂',S.aiResult.fat]].map(([k,v])=>`<div class="score-row"><span class="score-k">${k}</span><span class="score-v">${v||'正常'}</span></div>`).join('')}</div>`;
+  document.getElementById('ai-menu').innerHTML=Object.entries(S.multiSel).filter(([k,v])=>v.length>0).map(([k,v])=>`<div><span style="color:var(--tx3)">${k}：</span>${v.join(' / ')}</div>`).join('');
+  document.getElementById('ai-sum').textContent=S.aiResult.summary||'';
 }
 
-async function goIngredients() {
-  showSub('ingredients');
-  document.getElementById('ing-content').innerHTML = '';
-  document.getElementById('ing-loading').style.display = 'flex';
-  const selData = S.mode === 'light' ? S.lightSel : S.ckSel;
-  const dishes = Object.entries(selData).filter(([k,v])=>v.length>0).flatMap(([k,v])=>v);
-  const prompt = `我要做：${dishes.join('、')}。请列出每道菜所需主要食材和用量（2-3人份）。直接输出JSON不要markdown：{"dishes":[{"name":"红烧肉","ingredients":[{"name":"五花肉","amount":"400g"}]}]}`;
-  try {
-    const r = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${DSKEY}`},
-      body: JSON.stringify({ model:'deepseek-chat', max_tokens:800, messages:[{role:'user',content:prompt}] })
-    });
-    const d = await r.json();
-    let t = d.choices?.[0]?.message?.content || '{}';
-    t = t.replace(/```json|```/g,'').trim();
-    const result = JSON.parse(t);
-    document.getElementById('ing-loading').style.display = 'none';
-    document.getElementById('ing-content').innerHTML = (result.dishes||[]).map(dish =>
-      `<div class="ing-dish">
-        <div class="ing-dish-name">${dish.name}</div>
-        <div class="ing-list-card">${(dish.ingredients||[]).map(ing=>`<div class="ing-row"><span>${ing.name}</span><span class="ing-amt">${ing.amount}</span></div>`).join('')}</div>
-      </div>`).join('');
-  } catch(e) {
-    document.getElementById('ing-loading').style.display = 'none';
-    document.getElementById('ing-content').innerHTML = '<div style="font-size:13px;color:var(--text-sub)">食材清单生成失败，请检查网络连接</div>';
+async function goIng(){
+  showSub('ing');
+  document.getElementById('ing-content').innerHTML='';
+  const ingLoad=document.getElementById('ing-load');ingLoad.style.display='flex';
+  const dishes=Object.entries(S.multiSel).filter(([k,v])=>v.length>0).flatMap(([k,v])=>v);
+  const prompt=`我要做：${dishes.join('、')}。请列出每道菜所需主要食材和用量（2-3人份）。直接输出JSON不要markdown：{"dishes":[{"name":"红烧肉","ingredients":[{"name":"五花肉","amount":"400g"}]}]}`;
+  try{
+    const r=await fetch('https://api.deepseek.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DSKEY}`},body:JSON.stringify({model:'deepseek-chat',max_tokens:800,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    let t=d.choices?.[0]?.message?.content||'{}';
+    t=t.replace(/```json|```/g,'').trim();
+    const result=JSON.parse(t);
+    ingLoad.style.display='none';
+    document.getElementById('ing-content').innerHTML=(result.dishes||[]).map(dish=>
+      `<div class="ing-dish"><div class="ing-name">${dish.name}</div><div class="ing-card">${(dish.ingredients||[]).map(ing=>`<div class="ing-row"><span>${ing.name}</span><span class="ing-amt">${ing.amount}</span></div>`).join('')}</div></div>`
+    ).join('');
+  }catch(e){
+    ingLoad.style.display='none';
+    document.getElementById('ing-content').innerHTML='<div style="font-size:13px;color:var(--tx2)">食材清单生成失败，请检查网络连接</div>';
   }
 }
 
-function goRecord() {
-  S.editKey = null;
-  let note = '';
-  if (S.mode === 'delivery' || S.mode === 'dine') note = S.spinResult || '';
-  else if (S.mode === 'breakfast') note = Object.entries(S.bkSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ');
-  else if (S.mode === 'cook') note = Object.entries(S.ckSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ');
-  else if (S.mode === 'light') note = Object.entries(S.lightSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ');
-  S.photoData = null;
-  openRecordScreen(note, false);
+// ─── RECORD ──────────────────────────────────────────────────────────────────
+const ML={breakfast:'早餐',lunch:'午餐',dinner:'晚餐'};
+const MD={delivery:'外卖',dine:'出去吃',cook:'自己做',breakfast:'早餐',light:'轻食',direct:''};
+
+function goRec(){
+  S.editKey=null;
+  let note='';
+  if(S.mode==='delivery'||S.mode==='dine')note=S.spResult||'';
+  else if(S.mode==='breakfast')note=Object.entries(S.multiSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ');
+  else if(S.mode==='cook'||S.mode==='light')note=Object.entries(S.multiSel).filter(([k,v])=>v.length>0).map(([k,v])=>`${k}：${v.join('、')}`).join(' / ');
+  S.photoData=null;
+  openRec(note);
+}
+function openRec(note=''){
+  const modeStr=MD[S.mode]?`${ML[S.mealTime]} · ${MD[S.mode]}`:ML[S.mealTime];
+  document.getElementById('rec-ttl').textContent=S.editKey&&S.mode!=='direct'?'编辑记录':'记录这餐';
+  document.getElementById('rec-sub').textContent=modeStr;
+  document.getElementById('rec-note').value=note;
+  if(S.photoData){
+    document.getElementById('rec-upload').style.display='none';
+    document.getElementById('rec-prev').style.display='block';
+    document.getElementById('prev-img').src=S.photoData;
+  }else{
+    document.getElementById('rec-upload').style.display='block';
+    document.getElementById('rec-prev').style.display='none';
+  }
+  document.getElementById('photo-inp').value='';
+  showSub('rec');
+}
+function openRecEdit(note,isEdit){
+  openRec(note);
+  if(isEdit)document.getElementById('rec-ttl').textContent='编辑记录';
+}
+function handlePhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    S.photoData=ev.target.result;
+    document.getElementById('prev-img').src=ev.target.result;
+    document.getElementById('rec-upload').style.display='none';
+    document.getElementById('rec-prev').style.display='block';
+  };reader.readAsDataURL(f);
+}
+function rmPhoto(){
+  S.photoData=null;
+  document.getElementById('rec-upload').style.display='block';
+  document.getElementById('rec-prev').style.display='none';
+  document.getElementById('photo-inp').value='';
+}
+function saveRec(){
+  const note=document.getElementById('rec-note').value.trim();
+  const key=S.editKey||(()=>{const t=new Date();return`${t.getFullYear()}-${t.getMonth()+1}-${t.getDate()}`})();
+  if(!S.records[key])S.records[key]={};
+  S.records[key][S.mealTime]={mode:S.mode,note,photo:S.photoData,time:new Date().toISOString()};
+  saveS();
+  S.editKey=null;
+  toast('记录已保存 ✓');
+  const parts=key.split('-');
+  S.selDate={y:+parts[0],m:+parts[1],d:+parts[2]};
+  setTimeout(()=>showScr('cal'),600);
 }
 
-function esc(s) { return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+// ─── LIGHTBOX ────────────────────────────────────────────────────────────────
+function openLbox(src){document.getElementById('lbox-img').src=src;document.getElementById('lbox').classList.add('on');}
+function closeLbox(){document.getElementById('lbox').classList.remove('on');}
 
-function toast(msg) {
-  const t = document.getElementById('toast');  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+// ─── UTILS ──────────────────────────────────────────────────────────────────
+function esc(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),2000);
 }
 
-// Single wheel click-to-select (spinner mode)
-document.getElementById('main-canvas').addEventListener('click', (e) => {
-  if (spRunning || !S.spOptKey) return;
-  const canvas = e.target;
-  const rect = canvas.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-  const dx = e.clientX - cx;
-  const dy = e.clientY - cy;
-  const r = rect.width / 2;
-  if (dx*dx + dy*dy > r*r * 0.95) return;
-  let clickAngle = Math.atan2(dy, dx) + Math.PI / 2;
-  if (clickAngle < 0) clickAngle += Math.PI * 2;
-  const angle = spAngle;
-  const opts = S.opts[S.spOptKey];
-  if (!opts || !opts.length) return;
-  const slice = (Math.PI * 2) / opts.length;
-  const adjusted = ((clickAngle - angle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-  const idx = Math.floor(adjusted / slice) % opts.length;
-  const item = opts[idx];
-  if (!item) return;
-  spManualSel(idx);
-  // Flash
-  const ctx = canvas.getContext('2d');
-  const sa = idx * slice - Math.PI / 2 + angle;
-  ctx.save(); ctx.beginPath(); ctx.moveTo(260, 260);
-  ctx.arc(260, 260, 248, sa, sa + slice); ctx.closePath();
-  ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fill(); ctx.restore();
-  setTimeout(() => drawWheel('main-canvas', opts, spAngle), 180);
-});
-
-// Init
-initFirebase();
+// ─── INIT ────────────────────────────────────────────────────────────────────
 renderCal();
-showScreen('calendar');
-const today = new Date();
-S.selDate = { y: today.getFullYear(), m: today.getMonth()+1, d: today.getDate() };
-renderDayRecords(today.getFullYear(), today.getMonth()+1, today.getDate());
+showScr('cal');
+const now=new Date();
+S.selDate={y:now.getFullYear(),m:now.getMonth()+1,d:now.getDate()};
+renderDrec(now.getFullYear(),now.getMonth()+1,now.getDate());
 </script>
 </body>
 </html>
