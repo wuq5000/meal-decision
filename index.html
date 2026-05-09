@@ -518,8 +518,47 @@ function loadS(){
 }
 function saveS(){
   try{
-    localStorage.setItem('mealapp_v4',JSON.stringify({records:S.records,spOpts:S.spOpts,multiCats:S.multiCats,multiOpts:S.multiOpts}));
-  }catch(e){}
+    // Strip photos from records before saving (photos stored separately)
+    const recordsNoPhoto={};
+    for(const day in S.records){
+      recordsNoPhoto[day]={};
+      for(const meal in S.records[day]){
+        const r=S.records[day][meal];
+        recordsNoPhoto[day][meal]={mode:r.mode,note:r.note,time:r.time,hasPhoto:!!r.photo};
+      }
+    }
+    const data={records:recordsNoPhoto,spOpts:S.spOpts,multiCats:S.multiCats,multiOpts:S.multiOpts};
+    localStorage.setItem('mealapp_v4',JSON.stringify(data));
+    // Save photos separately per record key
+    for(const day in S.records){
+      for(const meal in S.records[day]){
+        const r=S.records[day][meal];
+        const pkey='mealphoto_'+day+'_'+meal;
+        if(r.photo){
+          try{localStorage.setItem(pkey,r.photo);}catch(e){console.warn('Photo too large to save:',pkey);}
+        } else {
+          localStorage.removeItem(pkey);
+        }
+      }
+    }
+    return true;
+  }catch(e){
+    console.error('saveS failed:',e);
+    return false;
+  }
+}
+
+function loadPhotos(){
+  // Restore photos into S.records from separate localStorage keys
+  for(const day in S.records){
+    for(const meal in S.records[day]){
+      if(S.records[day][meal].hasPhoto){
+        const pkey='mealphoto_'+day+'_'+meal;
+        const photo=localStorage.getItem(pkey);
+        if(photo)S.records[day][meal].photo=photo;
+      }
+    }
+  }
 }
 
 const saved=loadS();
@@ -536,11 +575,11 @@ const S={
   photoData:null,
   editKey:null,
   aiResult:null,
-  // Persisted
-  records: saved?saved.records:{},
-  spOpts: saved&&saved.spOpts?deepMerge(DEF.spOpts,saved.spOpts):JSON.parse(JSON.stringify(DEF.spOpts)),
-  multiCats: saved&&saved.multiCats?deepMerge(DEF.multiCats,saved.multiCats):JSON.parse(JSON.stringify(DEF.multiCats)),
-  multiOpts: saved&&saved.multiOpts?deepMerge(DEF.multiOpts,saved.multiOpts):JSON.parse(JSON.stringify(DEF.multiOpts)),
+  // Persisted — saved wins completely, DEF only as fallback when key missing
+  records: (saved&&saved.records)?saved.records:{},
+  spOpts: (saved&&saved.spOpts)?saved.spOpts:JSON.parse(JSON.stringify(DEF.spOpts)),
+  multiCats: (saved&&saved.multiCats)?saved.multiCats:JSON.parse(JSON.stringify(DEF.multiCats)),
+  multiOpts: (saved&&saved.multiOpts)?saved.multiOpts:JSON.parse(JSON.stringify(DEF.multiOpts)),
 };
 
 function deepMerge(def,sv){
@@ -783,6 +822,7 @@ function sheetToggle(i){
       document.getElementById('sp-hint').textContent='手动选择';
       document.getElementById('sp-rec-btn').style.display='block';
     }
+    // spResult is session-only, no need to persist
   } else {
     const cat=getCurCat();
     if(!S.multiSel[cat])S.multiSel[cat]=[];
@@ -1156,6 +1196,7 @@ function toast(msg){
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
+loadPhotos();
 renderCal();
 showScr('cal');
 const now=new Date();
