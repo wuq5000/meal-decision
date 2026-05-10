@@ -516,9 +516,55 @@ function loadS(){
     return JSON.parse(raw);
   }catch(e){return null}
 }
+// ─── IndexedDB for photos ────────────────────────────────────────────────────
+let photoDB=null;
+function openPhotoDB(){
+  return new Promise((res,rej)=>{
+    if(photoDB){res(photoDB);return;}
+    const req=indexedDB.open('mealPhotos',1);
+    req.onupgradeneeded=e=>{
+      e.target.result.createObjectStore('photos');
+    };
+    req.onsuccess=e=>{photoDB=e.target.result;res(photoDB);};
+    req.onerror=e=>rej(e);
+  });
+}
+function savePhoto(key,dataUrl){
+  return openPhotoDB().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction('photos','readwrite');
+    tx.objectStore('photos').put(dataUrl,key);
+    tx.oncomplete=()=>res();
+    tx.onerror=e=>rej(e);
+  }));
+}
+function deletePhoto(key){
+  return openPhotoDB().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction('photos','readwrite');
+    tx.objectStore('photos').delete(key);
+    tx.oncomplete=()=>res();
+    tx.onerror=e=>rej(e);
+  }));
+}
+function loadPhoto(key){
+  return openPhotoDB().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction('photos','readonly');
+    const req=tx.objectStore('photos').get(key);
+    req.onsuccess=e=>res(e.target.result||null);
+    req.onerror=e=>rej(e);
+  }));
+}
+function getAllPhotoKeys(){
+  return openPhotoDB().then(db=>new Promise((res,rej)=>{
+    const tx=db.transaction('photos','readonly');
+    const req=tx.objectStore('photos').getAllKeys();
+    req.onsuccess=e=>res(e.target.result||[]);
+    req.onerror=e=>rej(e);
+  }));
+}
+
 function saveS(){
   try{
-    // Strip photos from records before saving (photos stored separately)
+    // Save metadata only (no photos in localStorage)
     const recordsNoPhoto={};
     for(const day in S.records){
       recordsNoPhoto[day]={};
@@ -529,18 +575,6 @@ function saveS(){
     }
     const data={records:recordsNoPhoto,spOpts:S.spOpts,multiCats:S.multiCats,multiOpts:S.multiOpts};
     localStorage.setItem('mealapp_v4',JSON.stringify(data));
-    // Save photos separately per record key
-    for(const day in S.records){
-      for(const meal in S.records[day]){
-        const r=S.records[day][meal];
-        const pkey='mealphoto_'+day+'_'+meal;
-        if(r.photo){
-          try{localStorage.setItem(pkey,r.photo);}catch(e){console.warn('Photo too large to save:',pkey);}
-        } else {
-          localStorage.removeItem(pkey);
-        }
-      }
-    }
     return true;
   }catch(e){
     console.error('saveS failed:',e);
@@ -548,13 +582,23 @@ function saveS(){
   }
 }
 
-function loadPhotos(){
-  // Restore photos into S.records from separate localStorage keys
+// Save a single photo to IndexedDB when record is saved
+async function savePhotoForRecord(dayKey,mealKey,dataUrl){
+  const key=dayKey+'_'+mealKey;
+  if(dataUrl){
+    await savePhoto(key,dataUrl).catch(e=>console.warn('savePhoto failed',e));
+  } else {
+    await deletePhoto(key).catch(()=>{});
+  }
+}
+
+// Load all photos back into S.records on startup
+async function loadPhotos(){
   for(const day in S.records){
     for(const meal in S.records[day]){
       if(S.records[day][meal].hasPhoto){
-        const pkey='mealphoto_'+day+'_'+meal;
-        const photo=localStorage.getItem(pkey);
+        const key=day+'_'+meal;
+        const photo=await loadPhoto(key).catch(()=>null);
         if(photo)S.records[day][meal].photo=photo;
       }
     }
@@ -711,6 +755,7 @@ function editRec(key,mt){
 }
 function delRec(key,mt){
   if(!S.records[key])return;
+  deletePhoto(key+'_'+mt).catch(()=>{});
   delete S.records[key][mt];
   if(!Object.keys(S.records[key]).length)delete S.records[key];
   saveS();toast('已删除');renderCal();
@@ -1170,11 +1215,13 @@ function rmPhoto(){
   document.getElementById('rec-prev').style.display='none';
   document.getElementById('photo-inp').value='';
 }
-function saveRec(){
+async function saveRec(){
   const note=document.getElementById('rec-note').value.trim();
   const key=S.editKey||(()=>{const t=new Date();return`${t.getFullYear()}-${t.getMonth()+1}-${t.getDate()}`})();
   if(!S.records[key])S.records[key]={};
   S.records[key][S.mealTime]={mode:S.mode,note,photo:S.photoData,time:new Date().toISOString()};
+  // Save photo to IndexedDB (no size limit), metadata to localStorage
+  await savePhotoForRecord(key,S.mealTime,S.photoData);
   saveS();
   S.editKey=null;
   toast('记录已保存 ✓');
@@ -1196,12 +1243,14 @@ function toast(msg){
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
-loadPhotos();
-renderCal();
-showScr('cal');
-const now=new Date();
-S.selDate={y:now.getFullYear(),m:now.getMonth()+1,d:now.getDate()};
-renderDrec(now.getFullYear(),now.getMonth()+1,now.getDate());
+(async()=>{
+  await loadPhotos();
+  const now=new Date();
+  S.selDate={y:now.getFullYear(),m:now.getMonth()+1,d:now.getDate()};
+  renderCal();
+  showScr('cal');
+  renderDrec(now.getFullYear(),now.getMonth()+1,now.getDate());
+})();
 </script>
 </body>
 </html>
